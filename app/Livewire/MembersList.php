@@ -15,8 +15,8 @@ class MembersList extends Component
     public $activeFilter = 'all'; // all, active, inactive
     public $groupFilter = '';
     
-    // Pentru ascultare real-time
-    protected $listeners = ['memberUpdated' => '$refresh'];
+  
+   protected $listeners = ['memberUpdated' => '$refresh'];
 
     // Query string parameters pentru păstrarea filtrelor în URL
     protected $queryString = [
@@ -34,6 +34,7 @@ class MembersList extends Component
     {
         return Member::query()
             ->where('club_id', Auth::user()->club_id)
+            ->with(['group', 'feeType']) // eager loading pentru relații
             ->when($this->search, function ($query) {
                 $query->where(function($q) {
                     $q->where('name', 'like', '%'.$this->search.'%')
@@ -47,7 +48,6 @@ class MembersList extends Component
             ->when($this->groupFilter, function ($query) {
                 $query->where('group_id', $this->groupFilter);
             })
-            ->with(['group', 'feeType'])
             ->orderBy('name')
             ->paginate(10);
     }
@@ -56,7 +56,29 @@ class MembersList extends Component
     {
         $member = Member::find($memberId);
         $member->update(['active' => !$member->active]);
-        $this->emit('memberUpdated');
+        $this->dispatch('memberUpdated');
+    }
+
+    public function deleteMember($memberId)
+    {
+        $member = Member::where('id', $memberId)
+                       ->where('club_id', Auth::user()->club_id)
+                       ->first();
+
+        if (!$member) {
+            session()->flash('error', 'Membrul nu a fost găsit!');
+            return;
+        }
+
+        // Verificăm dacă membrul are plăți sau prezențe înregistrate
+        if($member->payments()->count() > 0 || $member->attendances()->count() > 0) {
+            $member->update(['active' => false]);
+            session()->flash('message', 'Membrul a fost dezactivat deoarece are istoric de plăți sau prezențe!');
+            return;
+        }
+
+        $member->delete();
+        session()->flash('message', 'Membrul a fost șters cu succes!');
     }
 
     public function render()
