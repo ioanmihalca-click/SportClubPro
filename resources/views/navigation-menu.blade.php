@@ -27,6 +27,9 @@
                      <x-nav-link href="{{ route('attendance.index') }}" :active="request()->routeIs('attendance.index')">
                         {{ __('Prezențe') }}
                     </x-nav-link>
+                     <x-nav-link href="{{ route('events.index') }}" :active="request()->routeIs('events.index')">
+                        {{ __('Evenimente') }}
+                    </x-nav-link>
                     
                 </div>
             </div>
@@ -167,7 +170,9 @@
             <x-responsive-nav-link href="{{ route('attendance.index') }}" :active="request()->routeIs('attendance.index')">
                 {{ __('Prezențe') }}
             </x-responsive-nav-link>
-            
+               <x-responsive-nav-link href="{{ route('events.index') }}" :active="request()->routeIs('events.index')">
+                {{ __('Evenimente') }}
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->

@@ -45,4 +45,17 @@ Route::get('/attendance', function () {
     return view('attendance.index');
 })->name('attendance.index');
 
+//Events
+Route::get('/events', function () {
+    return view('events.index');
+})->name('events.index');
+
+Route::get('/events/create', function () {
+    return view('events.create');
+})->name('events.create');
+
+Route::get('/events/{event}/edit', function ($event) {
+    return view('events.edit', ['eventId' => $event]);
+})->name('events.edit');
+
 });
