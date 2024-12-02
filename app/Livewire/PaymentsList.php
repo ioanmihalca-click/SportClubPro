@@ -19,6 +19,10 @@ class PaymentsList extends Component
     public $paymentDate;
     public $notes;
 
+
+    public $searchMember = '';
+    public $filteredMembers = [];
+
     public function rules()
     {
         return [
@@ -30,6 +34,26 @@ class PaymentsList extends Component
         ];
     }
 
+    public function updatedSearchMember()
+    {
+        if (strlen($this->searchMember) >= 2) {
+            $this->filteredMembers = Member::where('club_id', Auth::user()->club_id)
+                ->where('active', true)
+                ->where('name', 'like', "%{$this->searchMember}%")
+                ->orderBy('name')
+                ->get();
+        } else {
+            $this->filteredMembers = [];
+        }
+    }
+
+    public function selectMember($memberId)
+    {
+        $this->memberId = $memberId;
+        $this->searchMember = Member::find($memberId)->name;
+        $this->filteredMembers = [];
+    }
+
     public function mount()
     {
         $this->paymentDate = now()->format('Y-m-d');
@@ -38,7 +62,7 @@ class PaymentsList extends Component
     public function savePayment()
     {
         $validated = $this->validate();
-        
+
         Payment::create([
             'member_id' => $validated['memberId'],
             'fee_type_id' => $validated['feeTypeId'],
@@ -48,7 +72,7 @@ class PaymentsList extends Component
         ]);
 
         session()->flash('message', 'Plata a fost înregistrată cu succes!');
-        
+
         $this->reset(['memberId', 'amount', 'notes']);
         $this->dispatch('paymentAdded');
     }
@@ -57,19 +81,19 @@ class PaymentsList extends Component
     {
         $payment = Payment::findOrFail($paymentId);
         $payment->delete();
-        
+
         session()->flash('message', 'Plata a fost ștearsă cu succes!');
     }
 
     public function getPayments()
     {
         return Payment::query()
-            ->whereHas('member', function($query) {
+            ->whereHas('member', function ($query) {
                 $query->where('club_id', Auth::user()->club_id);
             })
             ->with(['member', 'feeType'])
-            ->when($this->search, function($query) {
-                $query->whereHas('member', function($q) {
+            ->when($this->search, function ($query) {
+                $query->whereHas('member', function ($q) {
                     $q->where('name', 'like', "%{$this->search}%");
                 });
             })
@@ -82,9 +106,9 @@ class PaymentsList extends Component
         return view('livewire.payments-list', [
             'payments' => $this->getPayments(),
             'members' => Member::where('club_id', Auth::user()->club_id)
-                              ->where('active', true)
-                              ->orderBy('name')
-                              ->get(),
+                ->where('active', true)
+                ->orderBy('name')
+                ->get(),
             'feeTypes' => Auth::user()->club->feeTypes
         ]);
     }
