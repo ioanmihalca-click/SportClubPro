@@ -1,4 +1,4 @@
-// resources/views/livewire/dashboard.blade.php
+
 <div>
     <div class="grid grid-cols-1 gap-4 mb-8 md:grid-cols-3">
         <!-- Membri Activi -->

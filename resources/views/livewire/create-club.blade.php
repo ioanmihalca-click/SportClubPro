@@ -1,4 +1,4 @@
-// resources/views/livewire/create-club.blade.php
+
 <div class="py-12">
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="p-6 overflow-hidden bg-white shadow-xl sm:rounded-lg">
@@ -58,7 +58,7 @@
 
                 <div class="mb-6">
                     <label class="block mb-2 text-sm font-bold text-gray-700" for="cif">
-                        CIF/CUI
+                        CIF/CUI (optional)
                     </label>
                     <input 
                         class="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
