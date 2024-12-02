@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -62,5 +63,12 @@ Route::get('/events/{event}/participants', function (App\Models\Event $event) {
     return view('events.participants', ['event' => $event]);
 })->name('events.participants');
 
+//Rapoarte pdf
+Route::prefix('reports')->name('reports.')->group(function () {
+    Route::get('/members', [ReportController::class, 'membersList'])->name('members');
+    Route::get('/financial', [ReportController::class, 'financial'])->name('financial');
+    Route::get('/attendance', [ReportController::class, 'attendance'])->name('attendance');
+    Route::get('/event/{event}/results', [ReportController::class, 'eventResults'])->name('event-results');
+});
 
 });

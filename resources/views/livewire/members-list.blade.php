@@ -25,10 +25,15 @@
         </div>
 
         <!-- Add Member Button -->
-        <div>
+        
+        <div class="flex space-x-4">
             <a href="{{ route('members.create') }}"
-                class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-indigo-600 border border-transparent rounded-md dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring focus:ring-indigo-300 disabled:opacity-25">
+                class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
                 Adaugă Membru
+            </a>
+            <a href="{{ route('reports.members') }}"
+                class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700">
+                Export PDF
             </a>
         </div>
     </div>
