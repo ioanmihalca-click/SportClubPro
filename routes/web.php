@@ -14,4 +14,30 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+// Members Routes
+Route::prefix('members')->group(function () {
+    Route::get('/', function () {
+        return view('members.index');
+    })->name('members.index');
+
+    Route::get('/create', function () {
+        return view('members.create');
+    })->name('members.create');
+
+    Route::get('/{member}/edit', function ($member) {
+        return view('members.edit', ['memberId' => $member]);
+    })->name('members.edit');
+});
+
+//Groupe
+Route::get('/groups', function () {
+    return view('groups.index');
+})->name('groups.index');
+
+//Tipuri de Cotizatii
+Route::get('/fee-types', function () {
+    return view('fee-types.index');
+})->name('fee-types.index');
+
 });
