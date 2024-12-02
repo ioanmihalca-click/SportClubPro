@@ -24,6 +24,9 @@
                     <x-nav-link href="{{ route('fee-types.index') }}" :active="request()->routeIs('fee-types.index')">
                         {{ __('Tipuri Cotizații') }}
                     </x-nav-link>
+                     <x-nav-link href="{{ route('attendance.index') }}" :active="request()->routeIs('attendance.index')">
+                        {{ __('Prezențe') }}
+                    </x-nav-link>
                     
                 </div>
             </div>
@@ -160,6 +163,9 @@
             </x-responsive-nav-link>
              <x-responsive-nav-link href="{{ route('fee-types.index') }}" :active="request()->routeIs('fee-types.index')">
                 {{ __('Tipuri Cotizații') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('attendance.index') }}" :active="request()->routeIs('attendance.index')">
+                {{ __('Prezențe') }}
             </x-responsive-nav-link>
             
         </div>

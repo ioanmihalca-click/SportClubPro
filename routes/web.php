@@ -40,4 +40,9 @@ Route::get('/fee-types', function () {
     return view('fee-types.index');
 })->name('fee-types.index');
 
+//Prezente
+Route::get('/attendance', function () {
+    return view('attendance.index');
+})->name('attendance.index');
+
 });
