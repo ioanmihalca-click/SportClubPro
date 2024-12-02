@@ -8,13 +8,13 @@
     <div class="py-12">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <!-- Mobile Ad (apare doar pe mobile) -->
-            <div class="mb-6 lg:hidden">
+            {{-- <div class="mb-6 lg:hidden">
                 <div class="w-full h-32 bg-gray-100 rounded-lg dark:bg-gray-700">
-                    <!-- Mobile Banner Dashboard -->
+                  
                     <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4375168668507865"
                         data-ad-slot="5710411733" data-ad-format="auto" data-full-width-responsive="true"></ins>
                 </div>
-            </div>
+            </div> --}}
 
             <!-- Flex container pentru conținut și sidebar -->
             <div class="flex gap-6">
