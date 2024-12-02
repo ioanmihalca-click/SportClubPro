@@ -58,4 +58,9 @@ Route::get('/events/{event}/edit', function ($event) {
     return view('events.edit', ['eventId' => $event]);
 })->name('events.edit');
 
+Route::get('/events/{event}/participants', function (App\Models\Event $event) {
+    return view('events.participants', ['event' => $event]);
+})->name('events.participants');
+
+
 });
