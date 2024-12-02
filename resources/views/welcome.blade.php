@@ -77,11 +77,11 @@
                         <!-- Banner principal AdSense -->
                         <div class="w-full py-8 bg-white dark:bg-gray-800">
                             <div class="px-4 mx-auto max-w-7xl">
-                                <div
-                                    class="flex items-center justify-center w-full h-24 bg-gray-100 rounded-lg dark:bg-gray-700">
-                                    <ins class="adsbygoogle" style="display:block" data-ad-format="fluid"
-                                        data-ad-layout-key="-6t+ed+2i-1n-4w" data-ad-client="ca-pub-4375168668507865"
-                                        data-ad-slot="2732792975"></ins>
+                                <div class="min-w-[250px] max-w-[728px] mx-auto"> <!-- Container pentru ad -->
+                                    <ins class="adsbygoogle" style="display:block; min-width:250px;"
+                                        data-ad-client="ca-pub-4375168668507865" data-ad-slot="2732792975"
+                                        data-ad-format="auto" data-full-width-responsive="true">
+                                    </ins>
                                 </div>
                             </div>
                         </div>
