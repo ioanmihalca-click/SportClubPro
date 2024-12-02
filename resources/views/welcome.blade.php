@@ -73,20 +73,22 @@
                                 </svg>
                             </a>
                         </div>
-                        
-                         <!-- Banner principal AdSense -->
-                    <div class="w-full py-8 bg-white dark:bg-gray-800">
-                        <div class="px-4 mx-auto max-w-7xl">
-                            <div
-                                class="flex items-center justify-center w-full h-24 bg-gray-100 rounded-lg dark:bg-gray-700">
-                                <!-- Google AdSense code -->
+
+                        <!-- Banner principal AdSense -->
+                        <div class="w-full py-8 bg-white dark:bg-gray-800">
+                            <div class="px-4 mx-auto max-w-7xl">
+                                <div
+                                    class="flex items-center justify-center w-full h-24 bg-gray-100 rounded-lg dark:bg-gray-700">
+                                    <ins class="adsbygoogle" style="display:block" data-ad-format="fluid"
+                                        data-ad-layout-key="-6t+ed+2i-1n-4w" data-ad-client="ca-pub-4375168668507865"
+                                        data-ad-slot="2732792975"></ins>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
                     </div>
 
-                   
+
 
                     <!-- Right Column - Features -->
                     <div class="grid gap-6">
@@ -139,8 +141,12 @@
 
         <!-- Footer -->
         <x-footer />
-        
+
     </div>
+
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
 </body>
 
 </html>
