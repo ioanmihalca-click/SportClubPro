@@ -24,17 +24,22 @@
             </select>
         </div>
 
-        <!-- Add Member Button -->
-        
-        <div class="flex space-x-4">
-            <a href="{{ route('members.create') }}"
-                class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
+         <!-- Action Buttons -->
+        <div class="flex space-x-2">
+            <a href="{{ route('members.create') }}" 
+               class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
                 Adaugă Membru
             </a>
-            <a href="{{ route('reports.members') }}"
-                class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700">
-                Export PDF
+            <a href="{{ route('reports.members') }}" 
+               class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700">
+                Export Membri PDF
             </a>
+            <button 
+                x-data
+                x-on:click="$dispatch('open-financial-modal')"
+                class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700">
+                Raport Financiar
+            </button>
         </div>
     </div>
 
@@ -109,6 +114,7 @@
                 @endforeach
             </tbody>
         </table>
+        
 
         <div class="p-4 dark:bg-gray-800">
             {{ $members->links() }}
@@ -162,6 +168,63 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal pentru raport financiar -->
+<div x-data="{ 
+    showModal: false,
+    monthNames: ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie']
+}"
+    x-on:open-financial-modal.window="showModal = true">
+    
+    <div x-show="showModal" class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"></div>
+
+    <div x-show="showModal" class="fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-full p-4">
+            <div class="w-full max-w-md px-4 py-6 bg-white rounded-lg dark:bg-gray-800">
+                <h3 class="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
+                    Generare Raport Financiar
+                </h3>
+
+                <form action="{{ route('reports.financial') }}" method="GET">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Luna</label>
+                            <select name="month" class="block w-full mt-1 border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                @for($i = 1; $i <= 12; $i++)
+                                    <option value="{{ $i }}" {{ now()->month == $i ? 'selected' : '' }}>
+                                        {{ Carbon\Carbon::create()->month($i)->format('F') }}
+                                    </option>
+                                @endfor
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Anul</label>
+                            <select name="year" class="block w-full mt-1 border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                @for($i = now()->year; $i >= now()->year - 5; $i--)
+                                    <option value="{{ $i }}">{{ $i }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end mt-6 space-x-3">
+                        <button type="button"
+                                x-on:click="showModal = false"
+                                class="px-4 py-2 font-bold text-gray-800 bg-gray-300 rounded dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 dark:text-gray-200">
+                            Anulează
+                        </button>
+                        <button type="submit"
+                                class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700">
+                            Generează Raport
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 </div>
 
 <script>

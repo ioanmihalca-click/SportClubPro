@@ -6,6 +6,17 @@
         </div>
     @endif
 
+    <div class="flex items-center justify-between mb-6">
+    <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-300">
+        Participanți {{ $event->name }}
+    </h2>
+    
+    <a href="{{ route('reports.event-results', $event->id) }}"
+       class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700">
+        Export Rezultate PDF
+    </a>
+</div>
+
     <div class="mb-4">
         <input type="text"
                wire:model.live="search"

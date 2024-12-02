@@ -14,9 +14,12 @@ class MembersList extends Component
     public $search = '';
     public $activeFilter = 'all'; // all, active, inactive
     public $groupFilter = '';
-    
-  
-   protected $listeners = ['memberUpdated' => '$refresh'];
+    public $showFinancialReportModal = false;
+    public $reportMonth;
+    public $reportYear;
+
+
+    protected $listeners = ['memberUpdated' => '$refresh'];
 
     // Query string parameters pentru păstrarea filtrelor în URL
     protected $queryString = [
@@ -24,6 +27,12 @@ class MembersList extends Component
         'activeFilter' => ['except' => 'all'],
         'groupFilter' => ['except' => '']
     ];
+
+    public function mount()
+    {
+        $this->reportMonth = now()->month;
+        $this->reportYear = now()->year;
+    }
 
     public function updatingSearch()
     {
@@ -36,10 +45,10 @@ class MembersList extends Component
             ->where('club_id', Auth::user()->club_id)
             ->with(['group', 'feeType']) // eager loading pentru relații
             ->when($this->search, function ($query) {
-                $query->where(function($q) {
-                    $q->where('name', 'like', '%'.$this->search.'%')
-                      ->orWhere('email', 'like', '%'.$this->search.'%')
-                      ->orWhere('phone', 'like', '%'.$this->search.'%');
+                $query->where(function ($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%')
+                        ->orWhere('email', 'like', '%' . $this->search . '%')
+                        ->orWhere('phone', 'like', '%' . $this->search . '%');
                 });
             })
             ->when($this->activeFilter !== 'all', function ($query) {
@@ -62,8 +71,8 @@ class MembersList extends Component
     public function deleteMember($memberId)
     {
         $member = Member::where('id', $memberId)
-                       ->where('club_id', Auth::user()->club_id)
-                       ->first();
+            ->where('club_id', Auth::user()->club_id)
+            ->first();
 
         if (!$member) {
             session()->flash('error', 'Membrul nu a fost găsit!');
@@ -71,7 +80,7 @@ class MembersList extends Component
         }
 
         // Verificăm dacă membrul are plăți sau prezențe înregistrate
-        if($member->payments()->count() > 0 || $member->attendances()->count() > 0) {
+        if ($member->payments()->count() > 0 || $member->attendances()->count() > 0) {
             $member->update(['active' => false]);
             session()->flash('message', 'Membrul a fost dezactivat deoarece are istoric de plăți sau prezențe!');
             return;

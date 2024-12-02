@@ -27,6 +27,9 @@
                      <x-nav-link href="{{ route('attendance.index') }}" :active="request()->routeIs('attendance.index')">
                         {{ __('Prezențe') }}
                     </x-nav-link>
+                       <x-nav-link href="{{ route('payments.index') }}" :active="request()->routeIs('payments.index')">
+                        {{ __('Plăți') }}
+                    </x-nav-link>
                      <x-nav-link href="{{ route('events.index') }}" :active="request()->routeIs('events.index')">
                         {{ __('Evenimente') }}
                     </x-nav-link>
@@ -169,6 +172,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link href="{{ route('attendance.index') }}" :active="request()->routeIs('attendance.index')">
                 {{ __('Prezențe') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('payments.index') }}" :active="request()->routeIs('payments.index')">
+                {{ __('Plăți') }}
             </x-responsive-nav-link>
                <x-responsive-nav-link href="{{ route('events.index') }}" :active="request()->routeIs('events.index')">
                 {{ __('Evenimente') }}

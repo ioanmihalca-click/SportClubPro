@@ -6,6 +6,22 @@
         </div>
     @endif
 
+
+<div class="flex items-center justify-between mb-6">
+    <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-300">Prezențe</h2>
+    
+    <form action="{{ route('reports.attendance') }}" method="GET" class="flex space-x-4">
+        <input type="hidden" name="start_date" value="{{ $selectedDate }}">
+        <input type="hidden" name="end_date" value="{{ $selectedDate }}">
+        <input type="hidden" name="group_id" value="{{ $selectedGroup }}">
+        
+        <button type="submit"
+                class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700">
+            Export Prezențe PDF
+        </button>
+    </form>
+</div>
+
     <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2">
         <!-- Selector Dată -->
         <div>

@@ -46,6 +46,11 @@ Route::get('/attendance', function () {
     return view('attendance.index');
 })->name('attendance.index');
 
+//Plăți
+Route::get('/payments', function () {
+    return view('payments.index');
+})->name('payments.index');
+
 //Events
 Route::get('/events', function () {
     return view('events.index');
