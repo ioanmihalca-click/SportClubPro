@@ -12,12 +12,13 @@
                 <div class="flex-1">
                     <livewire:dashboard />
                 </div>
-                
+
                 <!-- Sidebar Ads -->
                 <div class="hidden w-64 lg:block">
                     <div class="sticky top-4">
                         <div class="w-full bg-gray-100 rounded-lg h-96 dark:bg-gray-700">
-                            <!-- Google AdSense code -->
+                            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4375168668507865"
+                                data-ad-slot="4892052455" data-ad-format="auto" data-full-width-responsive="true"></ins>
                         </div>
                     </div>
                 </div>
