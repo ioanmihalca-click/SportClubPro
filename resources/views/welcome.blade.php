@@ -18,12 +18,12 @@
 
 </head>
 
-<body class="font-sans antialiased dark:bg-black dark:text-white/50">
+<body class="font-sans antialiased">
     <div class="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-black">
         <!-- Header/Nav -->
         <header class="flex items-center justify-between w-full px-6 py-4 max-w-7xl">
-            <div>
-                <img src="{{ asset('assets/logo-sportclubpro.webp') }}" alt="SportClubPro Logo" class="w-auto h-12">
+            <div class="text-2xl font-bold text-teal-600 dark:text-teal-400">
+                SportClubPro
             </div>
             @if (Route::has('login'))
                 <nav class="space-x-4">
@@ -37,7 +37,7 @@
                             @if (Route::has('register'))
                                 <a href="{{ route('register') }}"
                                     class="font-semibold text-teal-600 hover:text-teal-500 dark:text-teal-400 dark:hover:text-teal-300">Înregistrare
-                                    Gratuită</a>
+                                </a>
                             @endif
                         @endauth
                     </nav>
@@ -70,7 +70,20 @@
                                 </svg>
                             </a>
                         </div>
+                        
+                         <!-- Banner principal AdSense -->
+                    <div class="w-full py-8 bg-white dark:bg-gray-800">
+                        <div class="px-4 mx-auto max-w-7xl">
+                            <div
+                                class="flex items-center justify-center w-full h-24 bg-gray-100 rounded-lg dark:bg-gray-700">
+                                <!-- Google AdSense code -->
+                            </div>
+                        </div>
                     </div>
+
+                    </div>
+
+                   
 
                     <!-- Right Column - Features -->
                     <div class="grid gap-6">
@@ -122,25 +135,8 @@
         </main>
 
         <!-- Footer -->
-        <footer class="w-full py-8 bg-white dark:bg-gray-800">
-            <div class="px-6 mx-auto max-w-7xl">
-                <div class="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
-                    <div>
-                        <p class="text-gray-500 dark:text-gray-400">
-                            © {{ date('Y') }} SportClubPro. Toate drepturile rezervate.
-                        </p>
-                    </div>
-
-                    <div class="text-center text-gray-500 dark:text-gray-400">
-                        Aplicație Web dezvoltată de
-                        <a href="https://clickstudios-digital.com" target="_blank" rel="noopener noreferrer"
-                            class="text-teal-600 transition-colors dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300">
-                            Click Studios Digital
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </footer>
+        <x-footer />
+        
     </div>
 </body>
 
