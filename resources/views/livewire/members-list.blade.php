@@ -1,4 +1,17 @@
 <div class="dark:bg-gray-800">
+   
+    @if(session()->has('message'))
+        <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">
+            {{ session('message') }}
+        </div>
+    @endif
+
+    @if(session()->has('error'))
+        <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="flex flex-col mb-4 space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
         <!-- Search Bar -->
         <div class="flex-1">

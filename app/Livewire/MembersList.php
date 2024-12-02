@@ -73,19 +73,32 @@ class MembersList extends Component
         $member = Member::where('id', $memberId)
             ->where('club_id', Auth::user()->club_id)
             ->first();
-
+    
         if (!$member) {
             session()->flash('error', 'Membrul nu a fost găsit!');
             return;
         }
-
+    
         // Verificăm dacă membrul are plăți sau prezențe înregistrate
-        if ($member->payments()->count() > 0 || $member->attendances()->count() > 0) {
+        $hasPayments = $member->payments()->count() > 0;
+        $hasAttendances = $member->attendances()->count() > 0;
+    
+        if ($hasPayments || $hasAttendances) {
             $member->update(['active' => false]);
-            session()->flash('message', 'Membrul a fost dezactivat deoarece are istoric de plăți sau prezențe!');
+            $message = 'Membrul nu poate fi șters deoarece are ';
+            if ($hasPayments && $hasAttendances) {
+                $message .= 'istoric de plăți și prezențe';
+            } elseif ($hasPayments) {
+                $message .= 'istoric de plăți';
+            } else {
+                $message .= 'istoric de prezențe';
+            }
+            $message .= '. A fost marcat ca inactiv.';
+            
+            session()->flash('message', $message);
             return;
         }
-
+    
         $member->delete();
         session()->flash('message', 'Membrul a fost șters cu succes!');
     }
