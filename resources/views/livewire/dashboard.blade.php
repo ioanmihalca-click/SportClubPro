@@ -85,14 +85,16 @@
         </div>
     </div>
     <div class="grid grid-cols-1 gap-4 mb-8 lg:grid-cols-2">
-        <!-- Grafic Încasări Lunare -->
-        <div class="p-6 overflow-hidden bg-white shadow-xl dark:bg-gray-800 sm:rounded-lg">
-            <h2 class="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-200">Evoluție Încasări</h2>
-            <div x-data="{ chart: null }" x-init="chart = new ApexCharts($refs.paymentsChart, {
+    <!-- Grafic Încasări Lunare -->
+    <div class="p-6 overflow-hidden bg-white shadow-xl dark:bg-gray-800 sm:rounded-lg">
+        <h2 class="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-200">Evoluție Încasări</h2>
+        <div x-data="{ chart: null }" 
+             x-init="chart = new ApexCharts($refs.paymentsChart, {
                 chart: {
                     type: 'bar',
                     height: 350,
-                    toolbar: { show: false }
+                    toolbar: { show: false },
+                    background: 'transparent'
                 },
                 series: [{
                     name: 'Încasări',
@@ -101,27 +103,66 @@
                 xaxis: {
                     categories: {{ json_encode($stats['charts']['payments']['labels']) }},
                     labels: {
-                        style: { colors: '#6B7280' }
+                        style: { 
+                            colors: document.documentElement.classList.contains('dark') ? '#9CA3AF' : '#6B7280'
+                        }
                     }
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            colors: document.documentElement.classList.contains('dark') ? '#9CA3AF' : '#6B7280'
+                        }
+                    }
+                },
+                grid: {
+                    borderColor: document.documentElement.classList.contains('dark') ? '#374151' : '#E5E7EB'
                 },
                 colors: ['#4F46E5'],
                 theme: {
-                    mode: 'light'
+                    mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
                 }
             });
-            chart.render();">
-                <div x-ref="paymentsChart"></div>
-            </div>
+            chart.render();
+            
+            window.addEventListener('theme-toggle', function() {
+                chart.updateOptions({
+                    theme: {
+                        mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+                    },
+                    grid: {
+                        borderColor: document.documentElement.classList.contains('dark') ? '#374151' : '#E5E7EB'
+                    },
+                    xaxis: {
+                        labels: {
+                            style: {
+                                colors: document.documentElement.classList.contains('dark') ? '#9CA3AF' : '#6B7280'
+                            }
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            style: {
+                                colors: document.documentElement.classList.contains('dark') ? '#9CA3AF' : '#6B7280'
+                            }
+                        }
+                    }
+                })
+            });">
+            <div x-ref="paymentsChart"></div>
         </div>
+    </div>
 
-        <!-- Grafic Membri -->
-        <div class="p-6 overflow-hidden bg-white shadow-xl dark:bg-gray-800 sm:rounded-lg">
-            <h2 class="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-200">Evoluție Membri</h2>
-            <div x-data="{ chart: null }" x-init="chart = new ApexCharts($refs.membersChart, {
+    <!-- Grafic Membri -->
+    <div class="p-6 overflow-hidden bg-white shadow-xl dark:bg-gray-800 sm:rounded-lg">
+        <h2 class="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-200">Evoluție Membri</h2>
+        <div x-data="{ chart: null }" 
+             x-init="chart = new ApexCharts($refs.membersChart, {
                 chart: {
                     type: 'line',
                     height: 350,
-                    toolbar: { show: false }
+                    toolbar: { show: false },
+                    background: 'transparent'
                 },
                 series: [{
                     name: 'Membri Noi',
@@ -130,20 +171,57 @@
                 xaxis: {
                     categories: {{ json_encode($stats['charts']['members']['labels']) }},
                     labels: {
-                        style: { colors: '#6B7280' }
+                        style: {
+                            colors: document.documentElement.classList.contains('dark') ? '#9CA3AF' : '#6B7280'
+                        }
                     }
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            colors: document.documentElement.classList.contains('dark') ? '#9CA3AF' : '#6B7280'
+                        }
+                    }
+                },
+                grid: {
+                    borderColor: document.documentElement.classList.contains('dark') ? '#374151' : '#E5E7EB'
                 },
                 colors: ['#8B5CF6'],
                 stroke: {
                     curve: 'smooth'
                 },
                 theme: {
-                    mode: 'light'
+                    mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
                 }
             });
-            chart.render();">
-                <div x-ref="membersChart"></div>
-            </div>
+            chart.render();
+            
+            window.addEventListener('theme-toggle', function() {
+                chart.updateOptions({
+                    theme: {
+                        mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+                    },
+                    grid: {
+                        borderColor: document.documentElement.classList.contains('dark') ? '#374151' : '#E5E7EB'
+                    },
+                    xaxis: {
+                        labels: {
+                            style: {
+                                colors: document.documentElement.classList.contains('dark') ? '#9CA3AF' : '#6B7280'
+                            }
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            style: {
+                                colors: document.documentElement.classList.contains('dark') ? '#9CA3AF' : '#6B7280'
+                            }
+                        }
+                    }
+                })
+            });">
+            <div x-ref="membersChart"></div>
         </div>
     </div>
+</div>
 </div>

@@ -6,7 +6,7 @@
                 {{-- <div class="text-2xl font-bold text-teal-600 dark:text-teal-400">
                     SportClubPro
                 </div> --}}
-                <a href="{{ route('dashboard') }}">
+                <a href="/">
                     <img src="{{ asset('assets/logo.webp') }}" alt="SportClubPro Logo" class="w-auto h-16">
                 </a>
                 @if (Route::has('login'))
