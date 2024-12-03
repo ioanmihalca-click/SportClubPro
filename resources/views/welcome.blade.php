@@ -17,7 +17,7 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="SportClubPro - Management Club Sportiv">
     <meta property="og:description" content="Platformă gratuită pentru managementul cluburilor sportive">
-    <meta property="og:image" content="{{ asset('assets/OG-sportclubpro.webp') }}">
+    <meta property="og:image" content="{{ asset('assets/OG-sportclubpro.jpg') }}">
 
     <title>SportClubPro - Management pentru Clubul Tău Sportiv</title>
 
@@ -138,7 +138,7 @@
                         </div>
 
                         <!-- Banner principal AdSense -->
-                        <div class="w-full py-8 bg-white dark:bg-gray-800">
+                        {{-- <div class="w-full py-8 bg-white dark:bg-gray-800">
                             <div class="px-4 mx-auto max-w-7xl">
                                 <div
                                     class="flex items-center justify-center w-full h-24 bg-gray-100 rounded-lg dark:bg-gray-700">
@@ -147,7 +147,7 @@
                                         data-ad-slot="2732792975"></ins>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                     </div>
 

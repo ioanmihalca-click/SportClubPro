@@ -17,7 +17,7 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="SportClubPro - Management Club Sportiv">
     <meta property="og:description" content="Platformă gratuită pentru managementul cluburilor sportive">
-    <meta property="og:image" content="{{ asset('assets/OG-sportclubpro.webp') }}">
+    <meta property="og:image" content="{{ asset('assets/OG-sportclubpro.jpg') }}">
 
     <title>{{ config('app.name', 'SportClubPro') }}</title>
 

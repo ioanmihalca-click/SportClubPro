@@ -5,7 +5,7 @@
             <!-- Logo & Description -->
             <div>
                 <img src="{{ asset('assets/logo.webp') }}" alt="SportClubPro Logo" class="h-12 mb-4">
-                <p class="text-gray-600 dark:text-gray-400">
+                <p class="text-sm text-gray-600 dark:text-gray-400">
                     Platformă gratuită pentru managementul cluburilor sportive.
                 </p>
             </div>
