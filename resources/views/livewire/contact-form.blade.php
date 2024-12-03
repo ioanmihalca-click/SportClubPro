@@ -1,9 +1,5 @@
 <div class="space-y-6">
-    @if (session()->has('message'))
-        <div class="relative px-4 py-3 text-green-700 bg-green-100 border border-green-400 rounded">
-            {{ session('message') }}
-        </div>
-    @endif
+   
 
     <form wire:submit="submitForm" class="space-y-6">
         <div>
@@ -39,6 +35,13 @@
                     class="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-teal-600 border border-transparent rounded-md shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
                 Trimite Mesaj
             </button>
+
+             @if (session()->has('message'))
+        <div class="relative px-4 py-3 text-green-700 bg-green-100 border border-green-400 rounded">
+            {{ session('message') }}
+        </div>
+        
+    @endif
         </div>
     </form>
 </div>
