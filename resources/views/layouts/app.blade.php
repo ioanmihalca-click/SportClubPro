@@ -5,6 +5,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description"
+        content="SportClubPro - Platformă gratuită pentru managementul cluburilor sportive. Gestionează membri, prezențe, plăți și evenimente.">
+    <meta name="keywords"
+        content="management club sportiv, administrare club sport, evidență membri, prezențe club, plăți club sportiv">
+    <meta name="author" content="Click Studios Digital">
+    <meta name="robots" content="index, follow">
+
+     <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="SportClubPro - Management Club Sportiv">
+    <meta property="og:description" content="Platformă gratuită pentru managementul cluburilor sportive">
+    <meta property="og:image" content="{{ asset('assets/OG-sportclubpro.webp') }}">
 
     <title>{{ config('app.name', 'SportClubPro') }}</title>
 
@@ -15,7 +28,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/favicon/apple-touch-icon.png') }}" />
     <meta name="apple-mobile-web-app-title" content="SportClubPro" />
     <link rel="manifest" href="{{ asset('assets/favicon/site.webmanifest') }}" />
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />

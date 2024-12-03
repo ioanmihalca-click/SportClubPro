@@ -2,10 +2,19 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\DocumentationController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
+
+//Manual de utilizare
+
+Route::get('/manual', [DocumentationController::class, 'show'])->name('manual');
 
 Route::middleware([
     'auth:sanctum',

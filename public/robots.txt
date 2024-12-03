@@ -1,2 +1,11 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /login
+Disallow: /register
+Disallow: /dashboard
+Disallow: /members
+Disallow: /groups
+Disallow: /payments
+Disallow: /events
+
+Sitemap: https://sportclubpro.com/sitemap.xml

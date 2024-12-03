@@ -28,9 +28,12 @@
 </head>
 
 <body>
-    <div class="font-sans antialiased text-gray-900 dark:text-gray-100">
+
+    <div class="font-sans antialiased text-gray-900 bg-gray-100 dark:text-gray-100 dark:bg-gray-900">
         {{ $slot }}
     </div>
+
+    <x-footer />
 
     @livewireScripts
 </body>
