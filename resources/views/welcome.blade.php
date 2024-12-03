@@ -7,6 +7,14 @@
 
     <title>SportClubPro - Management pentru Clubul Tău Sportiv</title>
 
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="{{ asset('assets/favicon/favicon-96x96.png') }}" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="{{ asset('assets/favicon/favicon.svg') }}" />
+    <link rel="shortcut icon" href="{{ asset('assets/favicon/favicon.ico') }}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/favicon/apple-touch-icon.png') }}" />
+    <meta name="apple-mobile-web-app-title" content="SportClubPro" />
+    <link rel="manifest" href="{{ asset('assets/favicon/site.webmanifest') }}" />
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -59,7 +67,7 @@
                 <div class="grid items-center grid-cols-1 gap-12 lg:grid-cols-2">
                     <!-- Left Column - Text -->
                     <div class="space-y-8">
-                    
+
                         <h1 class="text-4xl font-bold text-gray-900 lg:text-6xl dark:text-white">
                             Management Eficient pentru Clubul Tău Sportiv
                         </h1>
