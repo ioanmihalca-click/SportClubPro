@@ -71,21 +71,22 @@
     </div>
 
     <!-- Members Cards Grid -->
-    <div class="mt-6 space-y-4">
-        @foreach ($members as $member)
-            <div class="p-4 bg-white rounded-lg shadow dark:bg-gray-700">
-                <div class="flex items-start justify-between">
-                    <div>
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                            {{ $member->name }}
-                        </h3>
-                        <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            {{ $member->email }}
-                        </div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
-                            {{ $member->phone }}
-                        </div>
+<!-- Members Cards Grid -->
+<div class="mt-6 space-y-4">
+    @foreach ($members as $member)
+        <div class="p-4 bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                        {{ $loop->iteration }}. {{ $member->name }}
+                    </h3>
+                    <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        {{ $member->email }}
                     </div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                        {{ $member->phone }}
+                    </div>
+                </div>
                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                         {{ $member->active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                         {{ $member->active ? 'Activ' : 'Inactiv' }}
