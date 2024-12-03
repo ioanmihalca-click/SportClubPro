@@ -121,10 +121,13 @@
                             Management Eficient pentru Clubul Tău Sportiv
                         </h1>
 
-                        <p class="text-xl text-gray-600 dark:text-gray-400">
-                            Platformă gratuită pentru managementul cluburilor sportive.
-                            Gestionează cu ușurință membrii, prezențele, plățile și evenimentele clubului tău.
-                            Soluție ideală pentru cluburi de arte marțiale, box, fotbal și alte sporturi.
+                        <p class="space-y-1 text-lg text-gray-600 dark:text-gray-400">
+                            <span class="block font-medium">
+                                Platformă gratuită pentru managementul cluburilor sportive.
+                            </span>
+                            <span class="block leading-relaxed">
+                                Gestionează cu ușurință membrii, prezențele, plățile și evenimentele clubului tău. Soluție ideală pentru cluburi de arte marțiale, box, fotbal și alte sporturi.
+                            </span>
                         </p>
 
                         <div class="pt-4">
