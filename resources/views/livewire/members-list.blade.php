@@ -1,5 +1,5 @@
-<div class="dark:bg-gray-800">
-   
+<div class="p-4 dark:bg-gray-800">
+    <!-- Notifications -->
     @if(session()->has('message'))
         <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">
             {{ session('message') }}
@@ -12,24 +12,28 @@
         </div>
     @endif
 
-    <div class="flex flex-col mb-4 space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+    <!-- Search and Filters Section - Stacked on mobile -->
+    <div class="space-y-4">
         <!-- Search Bar -->
-        <div class="flex-1">
-            <input type="text" wire:model.debounce.300ms="search" placeholder="Caută membri..."
-                class="w-full border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+        <div class="w-full">
+            <input type="text" 
+                   wire:model.live.debounce.300ms="search" 
+                   placeholder="Caută membri..."
+                   class="w-full p-3 border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+        
         </div>
 
-        <!-- Filters -->
-        <div class="flex space-x-4">
+        <!-- Filters - Full width on mobile -->
+        <div class="space-y-3 sm:space-y-0 sm:flex sm:space-x-3">
             <select wire:model="activeFilter"
-                class="border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    class="w-full p-3 border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                 <option value="all">Toți membrii</option>
                 <option value="active">Activi</option>
                 <option value="inactive">Inactivi</option>
             </select>
 
             <select wire:model="groupFilter"
-                class="border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    class="w-full p-3 border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                 <option value="">Toate grupele</option>
                 @foreach ($groups as $group)
                     <option value="{{ $group->id }}">{{ $group->name }}</option>
@@ -37,210 +41,275 @@
             </select>
         </div>
 
-         <!-- Action Buttons -->
-        <div class="flex space-x-2">
-            <a href="{{ route('members.create') }}" 
-               class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
-                Adaugă Membru
-            </a>
-            <a href="{{ route('reports.members') }}" 
-               class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700">
-                Export Membri PDF
-            </a>
-            <button 
-                x-data
-                x-on:click="$dispatch('open-financial-modal')"
-                class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700">
-                Raport Financiar
+        <!-- Action Dropdown for Mobile -->
+        <div x-data="{ open: false }" class="relative">
+            <button @click="open = !open" 
+                    class="w-full p-3 text-left text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                <span>Acțiuni</span>
+                <svg class="inline-block w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
             </button>
+
+            <div x-show="open" 
+                 @click.away="open = false"
+                 class="absolute z-50 w-full mt-2 bg-white rounded-md shadow-lg dark:bg-gray-700">
+                <a href="{{ route('members.create') }}" 
+                   class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600">
+                    Adaugă Membru
+                </a>
+                <a href="{{ route('reports.members') }}" 
+                   class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600">
+                    Export Membri PDF
+                </a>
+                <button @click="$dispatch('open-financial-modal')" 
+                        class="w-full px-4 py-3 text-sm text-left text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600">
+                    Raport Financiar
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Members Table -->
-    <div class="overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                    <th
-                        class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
-                        Nume</th>
-                    <th
-                        class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
-                        Contact</th>
-                    <th
-                        class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
-                        Grupă</th>
-                    <th
-                        class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
-                        Tip Cotizație</th>
-                    <th
-                        class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
-                        Status</th>
-                    <th
-                        class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
-                        Acțiuni</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                @foreach ($members as $member)
-                    <tr>
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $member->name }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">{{ $member->email }}</div>
-                            <div class="text-sm text-gray-500">{{ $member->phone }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">
-                                {{ $member->group ? $member->group->name : '-' }}
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">
-                                {{ $member->feeType ? $member->feeType->name : '-' }}
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span
-                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $member->active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                {{ $member->active ? 'Activ' : 'Inactiv' }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-sm font-medium whitespace-nowrap">
-                            <a href="{{ route('members.edit', $member) }}"
-                                class="mr-3 text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
-                                Edit
-                            </a>
-                            <button wire:click="toggleStatus({{ $member->id }})"
-                                class="mr-3 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300">
-                                {{ $member->active ? 'Dezactivează' : 'Activează' }}
-                            </button>
-                            <button x-data
-                                x-on:click="$dispatch('open-delete-modal', { memberId: {{ $member->id }} })"
-                                class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
-                                Șterge
-                            </button>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-        
-
-        <div class="p-4 dark:bg-gray-800">
-            {{ $members->links() }}
-        </div>
-    </div>
-
-    <!-- Modal de confirmare la sfârșitul componentei -->
-    <div x-data="{
-        showDeleteModal: false,
-        memberToDelete: null,
-        openModal(memberId) {
-            this.memberToDelete = memberId;
-            this.showDeleteModal = true;
-        }
-    }" @open-delete-modal.window="openModal($event.detail.memberId)">
-        <div x-show="showDeleteModal" class="fixed inset-0 z-10 overflow-y-auto" aria-labelledby="modal-title"
-            role="dialog" aria-modal="true">
-            <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"></div>
-
-                <div
-                    class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                    <div class="px-4 pt-5 pb-4 bg-white dark:bg-gray-800 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mt-3 text-center sm:mt-0 sm:text-left">
-                                <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100"
-                                    id="modal-title">
-                                    Confirmare ștergere
-                                </h3>
-                                <div class="mt-2">
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">
-                                        Sunteți sigur că doriți să ștergeți acest membru? Această acțiune nu poate fi
-                                        anulată.
-                                    </p>
-                                </div>
-                            </div>
+    <!-- Members Cards Grid -->
+    <div class="mt-6 space-y-4">
+        @foreach ($members as $member)
+            <div class="p-4 bg-white rounded-lg shadow dark:bg-gray-700">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            {{ $member->name }}
+                        </h3>
+                        <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            {{ $member->email }}
+                        </div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                            {{ $member->phone }}
                         </div>
                     </div>
-                    <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <button type="button" wire:click="deleteMember(memberToDelete)"
-                            @click="showDeleteModal = false"
-                            class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            Șterge
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                        {{ $member->active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                        {{ $member->active ? 'Activ' : 'Inactiv' }}
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Grupă</span>
+                        <p class="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                            {{ $member->group ? $member->group->name : '-' }}
+                        </p>
+                    </div>
+                    <div>
+                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Tip Cotizație</span>
+                        <p class="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                            {{ $member->feeType ? $member->feeType->name : '-' }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-4 space-x-3">
+                    <a href="{{ route('members.edit', $member) }}"
+                       class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
+                        Edit
+                    </a>
+                    <button wire:click="toggleStatus({{ $member->id }})"
+                            class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300">
+                        {{ $member->active ? 'Dezactivează' : 'Activează' }}
+                    </button>
+                    <button x-data
+                            x-on:click="$dispatch('open-delete-modal', { memberId: {{ $member->id }} })"
+                            class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                        Șterge
+                    </button>
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    <div class="mt-4">
+        {{ $members->links() }}
+    </div>
+
+
+<!-- Modal de confirmare ștergere -->
+<div x-data="{
+    showDeleteModal: false,
+    memberToDelete: null,
+    openModal(memberId) {
+        this.memberToDelete = memberId;
+        this.showDeleteModal = true;
+        document.body.style.overflow = 'hidden';
+    },
+    closeModal() {
+        this.showDeleteModal = false;
+        document.body.style.overflow = '';
+    }
+}" 
+    @open-delete-modal.window="openModal($event.detail.memberId)"
+    @keydown.escape.window="closeModal()">
+    
+    <!-- Backdrop -->
+    <div x-show="showDeleteModal" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-40 bg-gray-500 bg-opacity-75">
+    </div>
+
+    <!-- Modal -->
+    <div x-show="showDeleteModal" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform translate-y-full"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 transform translate-y-0"
+         x-transition:leave-end="opacity-0 transform translate-y-full"
+         class="fixed inset-0 z-50 overflow-y-auto md:overflow-visible"
+         @click.self="closeModal()">
+        
+        <div class="flex min-h-screen text-center md:block md:p-0">
+            <div class="w-full min-h-screen transition-all transform md:min-h-0 md:inline-block md:overflow-hidden md:max-w-lg md:my-8 md:align-middle md:w-full">
+                <!-- Modal content -->
+                <div class="w-full h-full text-left bg-white shadow-xl md:h-auto dark:bg-gray-800 md:rounded-lg">
+                    <!-- Header cu buton de închidere -->
+                    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            Confirmare ștergere
+                        </h3>
+                        <button @click="closeModal()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                            <span class="sr-only">Închide</span>
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
                         </button>
-                        <button type="button" @click="showDeleteModal = false"
-                            class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    </div>
+
+                    <!-- Conținut -->
+                    <div class="px-4 py-4">
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            Sunteți sigur că doriți să ștergeți acest membru? Această acțiune nu poate fi anulată.
+                        </p>
+                    </div>
+
+                    <!-- Footer cu acțiuni -->
+                    <div class="flex flex-col-reverse px-4 py-3 bg-gray-50 dark:bg-gray-700 sm:px-6 sm:flex-row sm:justify-end sm:space-x-2">
+                        <button type="button" 
+                                @click="closeModal()"
+                                class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm sm:mt-0 sm:w-auto hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700">
                             Anulează
+                        </button>
+                        <button type="button" 
+                                wire:click="deleteMember(memberToDelete)"
+                                @click="closeModal()"
+                                class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm sm:w-auto hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                            Șterge
                         </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal pentru raport financiar -->
+<!-- Modal pentru raport financiar -->
 <div x-data="{ 
     showModal: false,
-    monthNames: ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie']
-}"
-    x-on:open-financial-modal.window="showModal = true">
+    monthNames: ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'],
+    openModal() {
+        this.showModal = true;
+        document.body.style.overflow = 'hidden';
+    },
+    closeModal() {
+        this.showModal = false;
+        document.body.style.overflow = '';
+    }
+}" 
+    @open-financial-modal.window="openModal()"
+    @keydown.escape.window="closeModal()">
     
-    <div x-show="showModal" class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"></div>
+    <!-- Backdrop -->
+    <div x-show="showModal"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-40 bg-gray-500 bg-opacity-75">
+    </div>
 
-    <div x-show="showModal" class="fixed inset-0 z-10 overflow-y-auto">
-        <div class="flex items-center justify-center min-h-full p-4">
-            <div class="w-full max-w-md px-4 py-6 bg-white rounded-lg dark:bg-gray-800">
-                <h3 class="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
-                    Generare Raport Financiar
-                </h3>
-
-                <form action="{{ route('reports.financial') }}" method="GET">
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Luna</label>
-                            <select name="month" class="block w-full mt-1 border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                @for($i = 1; $i <= 12; $i++)
-                                    <option value="{{ $i }}" {{ now()->month == $i ? 'selected' : '' }}>
-                                        {{ Carbon\Carbon::create()->month($i)->format('F') }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Anul</label>
-                            <select name="year" class="block w-full mt-1 border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                @for($i = now()->year; $i >= now()->year - 5; $i--)
-                                    <option value="{{ $i }}">{{ $i }}</option>
-                                @endfor
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end mt-6 space-x-3">
-                        <button type="button"
-                                x-on:click="showModal = false"
-                                class="px-4 py-2 font-bold text-gray-800 bg-gray-300 rounded dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 dark:text-gray-200">
-                            Anulează
-                        </button>
-                        <button type="submit"
-                                class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700">
-                            Generează Raport
+    <!-- Modal -->
+    <div x-show="showModal"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform translate-y-full"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 transform translate-y-0"
+         x-transition:leave-end="opacity-0 transform translate-y-full"
+         class="fixed inset-0 z-50 overflow-y-auto md:overflow-visible"
+         @click.self="closeModal()">
+        
+        <div class="flex min-h-screen text-center md:block md:p-0">
+            <div class="w-full min-h-screen transition-all transform md:min-h-0 md:inline-block md:overflow-hidden md:max-w-lg md:my-8 md:align-middle md:w-full">
+                <div class="w-full h-full text-left bg-white shadow-xl md:h-auto dark:bg-gray-800 md:rounded-lg">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            Generare Raport Financiar
+                        </h3>
+                        <button @click="closeModal()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                            <span class="sr-only">Închide</span>
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
                         </button>
                     </div>
-                </form>
+
+                    <!-- Form content -->
+                    <form action="{{ route('reports.financial') }}" method="GET" class="p-4">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Luna</label>
+                                <select name="month" class="block w-full py-2 pl-3 pr-10 mt-1 text-base border-gray-300 rounded-md focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                    @for($i = 1; $i <= 12; $i++)
+                                        <option value="{{ $i }}" {{ now()->month == $i ? 'selected' : '' }}>
+                                            {{ Carbon\Carbon::create()->month($i)->format('F') }}
+                                        </option>
+                                    @endfor
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Anul</label>
+                                <select name="year" class="block w-full py-2 pl-3 pr-10 mt-1 text-base border-gray-300 rounded-md focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                    @for($i = now()->year; $i >= now()->year - 5; $i--)
+                                        <option value="{{ $i }}">{{ $i }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Footer actions -->
+                        <div class="flex flex-col-reverse mt-6 sm:flex-row sm:justify-end sm:space-x-2">
+                            <button type="button"
+                                    @click="closeModal()"
+                                    class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm sm:mt-0 sm:w-auto hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700">
+                                Anulează
+                            </button>
+                            <button type="submit"
+                                    class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm sm:w-auto hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                Generează Raport
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-</div>
-
-<script>
+    <script>
     window.addEventListener('livewire:load', function() {
         Livewire.on('confirmDelete', data => {
             window.dispatchEvent(new CustomEvent('confirm-delete', {
@@ -250,3 +319,6 @@
     });
 </script>
 </div>
+
+
+

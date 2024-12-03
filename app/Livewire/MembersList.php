@@ -2,9 +2,11 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Member;
+use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 class MembersList extends Component
@@ -12,16 +14,14 @@ class MembersList extends Component
     use WithPagination;
 
     public $search = '';
-    public $activeFilter = 'all'; // all, active, inactive
+    public $activeFilter = 'all';
     public $groupFilter = '';
     public $showFinancialReportModal = false;
     public $reportMonth;
     public $reportYear;
 
-
     protected $listeners = ['memberUpdated' => '$refresh'];
 
-    // Query string parameters pentru păstrarea filtrelor în URL
     protected $queryString = [
         'search' => ['except' => ''],
         'activeFilter' => ['except' => 'all'],
@@ -34,7 +34,7 @@ class MembersList extends Component
         $this->reportYear = now()->year;
     }
 
-    public function updatingSearch()
+    public function updatedSearch() 
     {
         $this->resetPage();
     }
@@ -42,13 +42,26 @@ class MembersList extends Component
     public function getMembers()
     {
         return Member::query()
-            ->where('club_id', Auth::user()->club_id)
-            ->with(['group', 'feeType']) // eager loading pentru relații
-            ->when($this->search, function ($query) {
-                $query->where(function ($q) {
+            ->select([
+                'members.id',
+                'members.name',
+                'members.email',
+                'members.phone',
+                'members.active',
+                'members.group_id',
+                'members.fee_type_id',
+                'members.club_id'
+            ])
+            ->where('members.club_id', Auth::user()->club_id)
+            ->with([
+                'group:id,name',
+                'feeType:id,name,amount'
+            ])
+            ->when($this->search, function ($query) {  // am eliminat $search din parametri
+                $query->where(function($q) {
                     $q->where('name', 'like', '%' . $this->search . '%')
-                        ->orWhere('email', 'like', '%' . $this->search . '%')
-                        ->orWhere('phone', 'like', '%' . $this->search . '%');
+                      ->orWhere('email', 'like', '%' . $this->search . '%')
+                      ->orWhere('phone', 'like', '%' . $this->search . '%');
                 });
             })
             ->when($this->activeFilter !== 'all', function ($query) {
@@ -105,9 +118,15 @@ class MembersList extends Component
 
     public function render()
     {
+        // Optimizăm și încărcarea grupurilor
+        $groups = Auth::user()->club->groups()
+            ->select(['id', 'name'])
+            ->orderBy('name')
+            ->get();
+
         return view('livewire.members-list', [
             'members' => $this->getMembers(),
-            'groups' => Auth::user()->club->groups
+            'groups' => $groups
         ]);
     }
 }
