@@ -27,7 +27,7 @@ class Documentation
                         'Dispozitiv: Desktop, Laptop, Tabletă sau Smartphone'
                     ],
                     'Acces și Autentificare' => [
-                        'Accesați www.sportclubpro.com',
+                        'Accesați www.sportclubpro.ro',
                         'Click pe "Înregistrare" pentru cont nou',
                         'Sau "Login" pentru conturi existente'
                     ]
@@ -172,7 +172,7 @@ class Documentation
                 'title' => '8. SUPORT',
                 'content' => [
                     'Contact' => [
-                        'Email: contact@sportclubpro.com',
+                        'Email: contact@sportclubpro.ro',
                         'Website: www.sportclubpro.ro'
                     ],
                     'Dezvoltator' => [
