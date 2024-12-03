@@ -5,6 +5,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <meta name="description"
+        content="SportClubPro - Platformă gratuită pentru managementul cluburilor sportive. Gestionează membri, prezențe, plăți și evenimente.">
+    <meta name="keywords"
+        content="management club sportiv, administrare club sport, evidență membri, prezențe club, plăți club sportiv">
+    <meta name="author" content="Click Studios Digital">
+    <meta name="robots" content="index, follow">
+
+         <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="SportClubPro - Management Club Sportiv">
+    <meta property="og:description" content="Platformă gratuită pentru managementul cluburilor sportive">
+    <meta property="og:image" content="{{ asset('assets/OG-sportclubpro.webp') }}">
+
     <title>SportClubPro - Management pentru Clubul Tău Sportiv</title>
 
     <!-- Favicons -->
