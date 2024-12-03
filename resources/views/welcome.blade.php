@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Laravel</title>
+    <title>SportClubPro - Management pentru Clubul Tău Sportiv</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -13,11 +13,14 @@
 
     <!-- Styles / Scripts -->
 
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4375168668507865"
         crossorigin="anonymous"></script>
+
+    @livewireStyles
 
 </head>
 
@@ -25,25 +28,28 @@
     <div class="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-black">
         <!-- Header/Nav -->
         <header class="flex items-center justify-between w-full px-6 py-4 max-w-7xl">
-            <div class="text-2xl font-bold text-teal-600 dark:text-teal-400">
+            {{-- <div class="text-2xl font-bold text-teal-600 dark:text-teal-400">
                 SportClubPro
-            </div>
+            </div> --}}
+            <a href="/">
+                <img src="{{ asset('assets/logo.webp') }}" alt="SportClubPro Logo" class="w-auto h-16">
+            </a>
             @if (Route::has('login'))
-                <nav class="space-x-4">
-                    <nav class="space-x-4">
-                        @auth
-                            <a href="{{ url('/dashboard') }}"
-                                class="font-semibold text-gray-700 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400">Dashboard</a>
-                        @else
-                            <a href="{{ route('login') }}"
-                                class="font-semibold text-gray-700 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400">Login</a>
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}"
-                                    class="font-semibold text-teal-600 hover:text-teal-500 dark:text-teal-400 dark:hover:text-teal-300">Înregistrare
-                                </a>
-                            @endif
-                        @endauth
-                    </nav>
+                <nav class="flex items-center space-x-4">
+                    @auth
+                        <a href="{{ url('/dashboard') }}"
+                            class="font-semibold text-gray-700 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400">Dashboard</a>
+                    @else
+                        <a href="{{ route('login') }}"
+                            class="font-semibold text-gray-700 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400">Login</a>
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}"
+                                class="font-semibold text-teal-600 hover:text-teal-500 dark:text-teal-400 dark:hover:text-teal-300">Înregistrare
+                            </a>
+                        @endif
+                    @endauth
+                    <livewire:theme-toggle />
+                </nav>
             @endif
         </header>
 
@@ -53,6 +59,7 @@
                 <div class="grid items-center grid-cols-1 gap-12 lg:grid-cols-2">
                     <!-- Left Column - Text -->
                     <div class="space-y-8">
+                    
                         <h1 class="text-4xl font-bold text-gray-900 lg:text-6xl dark:text-white">
                             Management Eficient pentru Clubul Tău Sportiv
                         </h1>
@@ -147,6 +154,8 @@
     <script>
         (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
+
+    @livewireScripts
 </body>
 
 </html>
