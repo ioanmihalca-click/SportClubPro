@@ -4,7 +4,7 @@
             <x-authentication-card-logo />
         </x-slot>
         
-        <livewire:theme-toggle />
+        
         
         <x-validation-errors class="mb-4" />
 
