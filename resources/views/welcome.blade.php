@@ -12,7 +12,7 @@
     <meta name="author" content="Click Studios Digital">
     <meta name="robots" content="index, follow">
 
-         <!-- Open Graph / Facebook -->
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="SportClubPro - Management Club Sportiv">
@@ -63,6 +63,19 @@
     }
 }
 </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MXVKPE4ZG1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-MXVKPE4ZG1');
+    </script>
 
     @livewireStyles
 
@@ -179,7 +192,8 @@
                                 </svg>
                             </div>
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Rapoarte și Statistici</h3>
-                            <p class="mt-2 text-gray-600 dark:text-gray-400">Rapoarte PDF detaliate și statistici pentru
+                            <p class="mt-2 text-gray-600 dark:text-gray-400">Rapoarte PDF detaliate și statistici
+                                pentru
                                 o mai bună înțelegere a activității clubului.</p>
                         </div>
 

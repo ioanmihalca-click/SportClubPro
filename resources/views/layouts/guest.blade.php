@@ -12,7 +12,7 @@
     <meta name="author" content="Click Studios Digital">
     <meta name="robots" content="index, follow">
 
-     <!-- Open Graph / Facebook -->
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="SportClubPro - Management Club Sportiv">
@@ -40,6 +40,19 @@
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4375168668507865"
         crossorigin="anonymous"></script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MXVKPE4ZG1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-MXVKPE4ZG1');
+    </script>
 
     <!-- Styles -->
     @livewireStyles
