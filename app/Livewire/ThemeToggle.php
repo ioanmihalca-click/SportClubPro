@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class ThemeToggle extends Component
 {
-    public $darkMode = false;
+    public $darkMode = true;
 
     public function mount()
     {
