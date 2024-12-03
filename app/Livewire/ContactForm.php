@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use App\Mail\ContactFormMail;
 use Illuminate\Support\Facades\Mail;
 
 class ContactForm extends Component
@@ -24,7 +25,7 @@ class ContactForm extends Component
         $validatedData = $this->validate();
 
         // Trimite email
-        Mail::to('support@sportclubpro.com')->send(new \App\Mail\ContactFormMail($validatedData));
+        Mail::to('contact@sportclubpro.ro')->send(new ContactFormMail($validatedData));
 
         session()->flash('message', 'Mesajul a fost trimis cu succes!');
         $this->reset(['name', 'email', 'subject', 'message']);
