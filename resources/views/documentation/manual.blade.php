@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="py-12">
-        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="p-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
     <!-- Header/Nav -->
         <header class="flex items-center justify-between w-full px-6 py-4 max-w-7xl">
             {{-- <div class="text-2xl font-bold text-teal-600 dark:text-teal-400">
@@ -38,7 +38,7 @@
                             @foreach($manual['sections'] as $section)
                                 <li>
                                     <a href="#{{ Str::slug($section['title']) }}" 
-                                       class="text-indigo-600 dark:text-indigo-400 hover:underline">
+                                       class="text-teal-600 dark:text-teal-400 hover:underline">
                                         {{ $section['title'] }}
                                     </a>
                                 </li>
@@ -67,7 +67,7 @@
                     <a href="{{ $item['url'] }}" 
                        target="_blank" 
                        rel="noopener noreferrer"
-                       class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
+                       class="text-teal-600 hover:text-teal-900 dark:text-teal-400 dark:hover:text-teal-300">
                         {{ $item['text'] }}
                     </a>
                 </li>
