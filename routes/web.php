@@ -16,12 +16,6 @@ Route::get('/contact', function () {
 
 Route::get('/manual', [DocumentationController::class, 'show'])->name('manual');
 
-//PWA
-
-Route::get('/loading', function () {
-    return view('vendor.laravelpwa.loading');
-});
-
 //Middleware
 
 Route::middleware([

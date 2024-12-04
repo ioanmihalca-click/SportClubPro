@@ -4,12 +4,12 @@ return [
     'manifest' => [
         'name' => env('APP_NAME', 'SportClubPro'),
         'short_name' => 'SportClubPro',
-        'start_url' => '/loading',  
-        'background_color' => '#ffffff',
-        'theme_color' => '#0d9488',
+        'start_url' => '/', 
+        'background_color' => '#0d9488', 
+        'theme_color' => '#0891b2',      
         'display' => 'standalone',
         'orientation' => 'portrait',
-        'status_bar' => 'black',
+        'status_bar' => 'teal',    
         'icons' => [
             '72x72' => [
                 'path' => '/assets/favicon/manifest-icon-192.png',
