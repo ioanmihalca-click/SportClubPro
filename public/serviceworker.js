@@ -1,7 +1,8 @@
 var staticCacheName = "pwa-v" + new Date().getTime();
 var filesToCache = [
-    '/',  
-    '/offline'
+    '/',
+    '/offline',
+    '/loading'
 ];
 
 self.addEventListener("install", event => {
@@ -33,7 +34,7 @@ self.addEventListener('activate', event => {
     );
 });
 
-self.addEventListener("fetch", event => {
+self.addEventListener('fetch', event => {
     event.respondWith(
         fetch(event.request)
             .catch(() => {
@@ -43,7 +44,7 @@ self.addEventListener("fetch", event => {
                             return response;
                         }
                         if (event.request.mode === 'navigate') {
-                            return caches.match('/offline');
+                            return caches.match('/loading');
                         }
                         return Promise.reject('no-match');
                     });
