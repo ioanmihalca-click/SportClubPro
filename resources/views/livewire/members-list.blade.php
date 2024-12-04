@@ -17,21 +17,21 @@
         <!-- Search Bar -->
         <div class="w-full">
             <input type="text" wire:model.live.debounce.300ms="search" placeholder="Caută membri..."
-                class="w-full p-3 border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                class="w-full p-3 border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:border-teal-300 focus:ring focus:ring-teal-200 focus:ring-opacity-50">
 
         </div>
 
         <!-- Filters - Full width on mobile -->
         <div class="space-y-3 sm:space-y-0 sm:flex sm:space-x-3">
             <select wire:model="activeFilter"
-                class="w-full p-3 border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                class="w-full p-3 border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:border-teal-300 focus:ring focus:ring-teal-200 focus:ring-opacity-50">
                 <option value="all">Toți membrii</option>
                 <option value="active">Activi</option>
                 <option value="inactive">Inactivi</option>
             </select>
 
             <select wire:model="groupFilter"
-                class="w-full p-3 border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                class="w-full p-3 border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:border-teal-300 focus:ring focus:ring-teal-200 focus:ring-opacity-50">
                 <option value="">Toate grupele</option>
                 @foreach ($groups as $group)
                     <option value="{{ $group->id }}">{{ $group->name }}</option>
@@ -108,7 +108,7 @@
 
                 <div class="flex justify-end mt-4 space-x-3">
                     <a href="{{ route('members.edit', $member) }}"
-                        class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
+                        class="text-teal-600 hover:text-teal-900 dark:text-teal-400 dark:hover:text-teal-300">
                         Edit
                     </a>
                     <button wire:click="toggleStatus({{ $member->id }})"
@@ -192,7 +192,7 @@
                         <div
                             class="flex flex-col-reverse px-4 py-3 bg-gray-50 dark:bg-gray-700 sm:px-6 sm:flex-row sm:justify-end sm:space-x-2">
                             <button type="button" @click="closeModal()"
-                                class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm sm:mt-0 sm:w-auto hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700">
+                                class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm sm:mt-0 sm:w-auto hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700">
                                 Anulează
                             </button>
                             <button type="button" wire:click="deleteMember(memberToDelete)" @click="closeModal()"
@@ -263,7 +263,7 @@
                                     <label
                                         class="block text-sm font-medium text-gray-700 dark:text-gray-300">Luna</label>
                                     <select name="month"
-                                        class="block w-full py-2 pl-3 pr-10 mt-1 text-base border-gray-300 rounded-md focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                        class="block w-full py-2 pl-3 pr-10 mt-1 text-base border-gray-300 rounded-md focus:border-teal-500 focus:outline-none focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                         @for ($i = 1; $i <= 12; $i++)
                                             <option value="{{ $i }}"
                                                 {{ now()->month == $i ? 'selected' : '' }}>
@@ -277,7 +277,7 @@
                                     <label
                                         class="block text-sm font-medium text-gray-700 dark:text-gray-300">Anul</label>
                                     <select name="year"
-                                        class="block w-full py-2 pl-3 pr-10 mt-1 text-base border-gray-300 rounded-md focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                        class="block w-full py-2 pl-3 pr-10 mt-1 text-base border-gray-300 rounded-md focus:border-teal-500 focus:outline-none focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                         @for ($i = now()->year; $i >= now()->year - 5; $i--)
                                             <option value="{{ $i }}">{{ $i }}</option>
                                         @endfor
@@ -288,7 +288,7 @@
                             <!-- Footer actions -->
                             <div class="flex flex-col-reverse mt-6 sm:flex-row sm:justify-end sm:space-x-2">
                                 <button type="button" @click="closeModal()"
-                                    class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm sm:mt-0 sm:w-auto hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700">
+                                    class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm sm:mt-0 sm:w-auto hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700">
                                     Anulează
                                 </button>
                                 <button type="submit"

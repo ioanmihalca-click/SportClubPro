@@ -1,7 +1,7 @@
 
 <div class="p-6 bg-white rounded-lg shadow-lg dark:bg-gray-800">
     @if(session()->has('message'))
-        <div class="relative px-4 py-3 mb-4 text-green-700 bg-green-100 border border-green-400 rounded">
+        <div class="relative px-4 py-3 mb-4 text-teal-700 bg-teal-100 border border-teal-400 rounded">
             {{ session('message') }}
         </div>
     @endif
@@ -16,7 +16,7 @@
         <input type="hidden" name="group_id" value="{{ $selectedGroup }}">
         
         <button type="submit"
-                class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700">
+                class="px-4 py-2 font-bold text-white bg-teal-500 rounded hover:bg-teal-700">
             Export Prezențe PDF
         </button>
     </form>
@@ -51,7 +51,7 @@
                     <div class="flex items-center">
                         <input type="checkbox"
                                wire:model="attendees.{{ $member->id }}"
-                               class="text-indigo-600 border-gray-300 rounded shadow-sm dark:border-gray-600 dark:bg-gray-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                               class="text-teal-600 border-gray-300 rounded shadow-sm dark:border-gray-600 dark:bg-gray-700 focus:border-teal-300 focus:ring focus:ring-teal-200 focus:ring-opacity-50">
                         <label class="ml-2 text-gray-700 dark:text-gray-300">{{ $member->name }}</label>
                     </div>
                 @endforeach
@@ -59,7 +59,7 @@
 
             <div class="mt-6">
                 <button type="submit"
-                        class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
+                        class="px-4 py-2 font-bold text-white bg-teal-500 rounded hover:bg-teal-700">
                     Salvează Prezențe
                 </button>
             </div>

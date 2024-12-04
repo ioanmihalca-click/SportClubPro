@@ -85,7 +85,7 @@
 
             <div class="flex justify-end">
                 <button type="submit"
-                    class="w-full px-6 py-3 font-bold text-white transition-colors bg-blue-500 rounded-md sm:w-auto hover:bg-blue-700">
+                    class="w-full px-6 py-3 font-bold text-white transition-colors bg-teal-500 rounded-md sm:w-auto hover:bg-teal-700">
                     Înregistrează Plata
                 </button>
             </div>

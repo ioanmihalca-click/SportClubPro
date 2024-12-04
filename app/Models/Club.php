@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 
 class Club extends Model
@@ -13,6 +15,40 @@ class Club extends Model
         'email',
         'cif'
     ];
+
+    protected static function boot()
+{
+    parent::boot();
+
+    static::deleting(function ($club) {
+        DB::transaction(function() use ($club) {
+            // Mai întâi ștergem prezențele
+            $club->members->each(function ($member) {
+                $member->attendances()->delete();
+            });
+
+            // Apoi ștergem plățile
+            $club->members->each(function ($member) {
+                $member->payments()->delete();
+            });
+
+            // Acum putem șterge membrii
+            $club->members()->delete();
+
+            // Ștergem grupurile
+            $club->groups()->delete();
+
+            // Ștergem tipurile de taxe
+            $club->feeTypes()->delete();
+
+            // Ștergem evenimentele
+            $club->events()->delete();
+
+            // Actualizăm utilizatorii asociați cu acest club
+            $club->users()->update(['club_id' => null]);
+        });
+    });
+}
 
     public function users()
     {

@@ -8,7 +8,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -18,7 +17,6 @@ class User extends Authenticatable implements MustVerifyEmail
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
     use HasProfilePhoto;
-    use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
 
@@ -67,6 +65,18 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
+
+    protected static function boot()
+{
+    parent::boot();
+
+    static::deleting(function ($user) {
+        // Șterge toate cluburile asociate utilizatorului
+        // Acest lucru va declanșa automat ștergerea în cascadă 
+        // pentru toate entitățile asociate clubului (membri, grupuri, evenimente etc.)
+        $user->club()->delete();
+    });
+}
 
     public function club()
     {

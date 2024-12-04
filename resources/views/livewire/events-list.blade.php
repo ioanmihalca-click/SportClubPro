@@ -9,12 +9,12 @@
         <div class="flex items-center space-x-4">
             <label class="flex items-center">
                 <input type="checkbox" wire:model.live="showPast"
-                    class="text-indigo-600 border-gray-300 rounded shadow-sm dark:border-gray-600">
+                    class="text-blue-600 border-gray-300 rounded shadow-sm dark:border-gray-600">
                 <span class="ml-2 text-gray-700 dark:text-gray-300">Arată evenimente trecute</span>
             </label>
 
             <a href="{{ route('events.create') }}"
-                class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
+                class="px-4 py-2 font-bold text-white bg-teal-500 rounded hover:bg-teal-700">
                 Adaugă Eveniment
             </a>
         </div>
@@ -39,11 +39,11 @@
                 
                 <div class="flex space-x-3">
                     <a href="{{ route('events.participants', $event) }}"
-                        class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
+                        class="text-teal-600 hover:text-teal-900 dark:text-teal-400 dark:hover:text-teal-300">
                         Participanți
                     </a>
                     <a href="{{ route('events.edit', $event) }}"
-                        class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
+                        class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
                         Editează
                     </a>
                     <button wire:click="$dispatch('confirmDelete', { id: {{ $event->id }} })"
