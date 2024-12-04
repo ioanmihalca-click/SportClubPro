@@ -110,62 +110,68 @@
             @endif
         </header>
 
-        <!-- Hero Section -->
-        <main class="flex items-center flex-grow">
-            <div class="px-6 py-16 mx-auto max-w-7xl">
-                <div class="grid items-center grid-cols-1 gap-12 lg:grid-cols-2">
-                    <!-- Left Column - Text -->
-                    <div class="space-y-8">
+<!-- Hero Section -->
+<main class="relative flex items-center flex-grow overflow-hidden">
+    <!-- Decorative background elements -->
+    <div class="absolute inset-0 z-0 opacity-55">
+        <div class="absolute rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] bg-gradient-radial from-teal-100 via-blue-50/50 to-transparent blur-2xl dark:from-teal-900/50 dark:via-blue-900/30 dark:to-transparent"></div>
+        <div class="absolute rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-gradient-radial from-blue-50 via-teal-50/50 to-transparent blur-2xl dark:from-blue-900/50 dark:via-teal-900/30 dark:to-transparent"></div>
+    </div>
 
-                        <h1 class="text-4xl font-bold text-gray-900 lg:text-6xl dark:text-white">
-                            Management Eficient pentru Clubul Tău Sportiv
-                        </h1>
+    <div class="relative z-10 px-6 py-16 mx-auto max-w-7xl">
+       <div class="grid items-center grid-cols-1 gap-12 lg:grid-cols-2">
+           <!-- Left Column - Text -->
+           <div class="space-y-8">
 
-                        <p class="space-y-1 text-lg text-gray-600 dark:text-gray-400">
-                            <span class="block font-medium">
-                                Platformă gratuită pentru managementul cluburilor sportive.
-                            </span>
-                            <span class="block leading-relaxed">
-                                Gestionează cu ușurință membrii, prezențele, plățile și evenimentele clubului tău. Soluție ideală pentru cluburi de arte marțiale, box, fotbal și alte sporturi.
-                            </span>
-                        </p>
+               <h1 class="text-4xl font-bold text-gray-900 lg:text-6xl dark:text-white">
+                   Management Eficient pentru Clubul Tău Sportiv
+               </h1>
 
-                        <div class="pt-4">
-                            <!-- CTA Buttons -->
-                            <div class="flex flex-col gap-4 sm:flex-row">
-                                <a href="{{ route('register') }}"
-                                    class="inline-flex items-center px-6 py-3 font-semibold text-white transition-colors bg-teal-600 rounded-lg shadow-lg hover:bg-teal-700">
-                                    Începe Gratuit
-                                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                    </svg>
-                                </a>
+               <p class="space-y-1 text-lg text-gray-600 dark:text-gray-400">
+                   <span class="block font-medium">
+                       Platformă gratuită pentru managementul cluburilor sportive.
+                   </span>
+                   <span class="block leading-relaxed">
+                       Gestionează cu ușurință membrii, prezențele, plățile și evenimentele clubului tău. Soluție ideală pentru cluburi de arte marțiale, box, fotbal și alte sporturi.
+                   </span>
+               </p>
 
-                                <a href="{{ route('manual') }}"
-                                    class="inline-flex items-center px-6 py-3 font-semibold text-teal-600 transition-colors bg-white border-2 border-teal-600 rounded-lg shadow-lg hover:bg-teal-50 dark:bg-gray-800 dark:text-teal-400 dark:border-teal-400 dark:hover:bg-gray-700">
-                                    Vezi Manualul
-                                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
+               <div class="pt-4">
+                   <!-- CTA Buttons -->
+                   <div class="flex flex-col gap-4 sm:flex-row">
+                       <a href="{{ route('register') }}"
+                           class="inline-flex items-center px-6 py-3 font-semibold text-white transition-colors bg-teal-600 rounded-lg shadow-lg hover:bg-teal-700">
+                           Începe Gratuit
+                           <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                   d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                           </svg>
+                       </a>
 
-                        <!-- Banner principal AdSense -->
-                        {{-- <div class="w-full py-8 bg-white dark:bg-gray-800">
-                            <div class="px-4 mx-auto max-w-7xl">
-                                <div
-                                    class="flex items-center justify-center w-full h-24 bg-gray-100 rounded-lg dark:bg-gray-700">
-                                    <ins class="adsbygoogle" style="display:block" data-ad-format="fluid"
-                                        data-ad-layout-key="-6t+ed+2i-1n-4w" data-ad-client="ca-pub-4375168668507865"
-                                        data-ad-slot="2732792975"></ins>
-                                </div>
-                            </div>
-                        </div> --}}
+                       <a href="{{ route('manual') }}"
+                           class="inline-flex items-center px-6 py-3 font-semibold text-teal-600 transition-colors bg-white border-2 border-teal-600 rounded-lg shadow-lg hover:bg-teal-50 dark:bg-gray-800 dark:text-teal-400 dark:border-teal-400 dark:hover:bg-gray-700">
+                           Vezi Manualul
+                           <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                   d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                           </svg>
+                       </a>
+                   </div>
+               </div>
 
-                    </div>
+               <!-- Banner principal AdSense -->
+               {{-- <div class="w-full py-8 bg-white dark:bg-gray-800">
+                   <div class="px-4 mx-auto max-w-7xl">
+                       <div
+                           class="flex items-center justify-center w-full h-24 bg-gray-100 rounded-lg dark:bg-gray-700">
+                           <ins class="adsbygoogle" style="display:block" data-ad-format="fluid"
+                               data-ad-layout-key="-6t+ed+2i-1n-4w" data-ad-client="ca-pub-4375168668507865"
+                               data-ad-slot="2732792975"></ins>
+                       </div>
+                   </div>
+               </div> --}}
+
+           </div>
 
 
 
