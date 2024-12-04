@@ -12,16 +12,24 @@ class PaymentsList extends Component
 {
     use WithPagination;
 
+    // Proprietăți pentru adăugare plată
     public $search = '';
     public $memberId;
     public $feeTypeId;
     public $amount;
     public $paymentDate;
     public $notes;
+    
+    // Proprietăți pentru filtrare
+    public $filterMemberId = '';
+    public $dateFrom = '';
+    public $dateTo = '';
 
-
+    // Proprietăți pentru căutare membru
     public $searchMember = '';
     public $filteredMembers = [];
+
+    protected $listeners = ['paymentAdded' => '$refresh'];
 
     public function rules()
     {
@@ -32,6 +40,13 @@ class PaymentsList extends Component
             'paymentDate' => 'required|date',
             'notes' => 'nullable|string'
         ];
+    }
+
+    public function mount()
+    {
+        $this->paymentDate = now()->format('Y-m-d');
+        $this->dateFrom = now()->startOfMonth()->format('Y-m-d');
+        $this->dateTo = now()->endOfMonth()->format('Y-m-d');
     }
 
     public function updatedSearchMember()
@@ -54,9 +69,11 @@ class PaymentsList extends Component
         $this->filteredMembers = [];
     }
 
-    public function mount()
+    public function resetFilters()
     {
-        $this->paymentDate = now()->format('Y-m-d');
+        $this->reset(['filterMemberId', 'dateFrom', 'dateTo', 'search']);
+        $this->dateFrom = now()->startOfMonth()->format('Y-m-d');
+        $this->dateTo = now()->endOfMonth()->format('Y-m-d');
     }
 
     public function savePayment()
@@ -73,43 +90,75 @@ class PaymentsList extends Component
 
         session()->flash('message', 'Plata a fost înregistrată cu succes!');
 
-        $this->reset(['memberId', 'amount', 'notes']);
+        $this->reset(['memberId', 'feeTypeId', 'amount', 'notes', 'searchMember']);
+        $this->paymentDate = now()->format('Y-m-d');
         $this->dispatch('paymentAdded');
     }
 
     public function deletePayment($paymentId)
     {
-        $payment = Payment::findOrFail($paymentId);
-        $payment->delete();
-
-        session()->flash('message', 'Plata a fost ștearsă cu succes!');
+        try {
+            $payment = Payment::findOrFail($paymentId);
+            $payment->delete();
+            session()->flash('message', 'Plata a fost ștearsă cu succes!');
+        } catch (\Exception $e) {
+            session()->flash('error', 'A apărut o eroare la ștergerea plății.');
+        }
     }
 
-    public function getPayments()
+    public function getTotalAmount()
+    {
+        return $this->getPaymentsQuery()->sum('amount');
+    }
+
+    public function getTotalPayments()
+    {
+        return $this->getPaymentsQuery()->count();
+    }
+
+    protected function getPaymentsQuery()
     {
         return Payment::query()
             ->whereHas('member', function ($query) {
                 $query->where('club_id', Auth::user()->club_id);
             })
-            ->with(['member', 'feeType'])
             ->when($this->search, function ($query) {
                 $query->whereHas('member', function ($q) {
                     $q->where('name', 'like', "%{$this->search}%");
                 });
             })
+            ->when($this->filterMemberId, function ($query) {
+                $query->where('member_id', $this->filterMemberId);
+            })
+            ->when($this->dateFrom, function ($query) {
+                $query->whereDate('payment_date', '>=', $this->dateFrom);
+            })
+            ->when($this->dateTo, function ($query) {
+                $query->whereDate('payment_date', '<=', $this->dateTo);
+            });
+    }
+
+    public function getPayments()
+    {
+        return $this->getPaymentsQuery()
+            ->with(['member', 'feeType'])
             ->latest('payment_date')
             ->paginate(10);
     }
 
     public function render()
     {
+        $payments = $this->getPayments();
+        
         return view('livewire.payments-list', [
-            'payments' => $this->getPayments(),
+            'payments' => $payments,
             'members' => Member::where('club_id', Auth::user()->club_id)
                 ->where('active', true)
                 ->orderBy('name')
                 ->get(),
-            'feeTypes' => Auth::user()->club->feeTypes
+            'feeTypes' => Auth::user()->club->feeTypes,
+            'totalAmount' => $this->getTotalAmount(),
+            'totalPayments' => $this->getTotalPayments()
         ]);
     }
 }

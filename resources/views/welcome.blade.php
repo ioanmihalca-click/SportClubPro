@@ -118,7 +118,7 @@
                 </div>
             </div>
 
-            <div class="relative z-10 px-6 py-16 mx-auto max-w-7xl">
+            <div class="relative z-10 px-6 py-12 mx-auto md:py-16 max-w-7xl">
                 <div class="grid items-center grid-cols-1 gap-12 lg:grid-cols-2">
                     <!-- Left Column - Text -->
                     <div class="space-y-8">

@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <div class="py-12">
+    <div class="pb-12">
         <div class="p-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
     <!-- Header/Nav -->
         <header class="flex items-center justify-between w-full px-6 py-4 max-w-7xl">
@@ -30,6 +30,24 @@
 
 
             <div class="overflow-hidden bg-white shadow-xl dark:bg-gray-800 sm:rounded-lg">
+
+              <!-- Video Section -->
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="mb-6 text-2xl font-bold text-center text-gray-900 dark:text-gray-100">
+                        Tutorial Video SportClubPro
+                    </h2>
+                    <div class="relative w-full overflow-hidden pt-[56.25%]">
+                        <iframe 
+                            class="absolute top-0 left-0 w-full h-full rounded-lg"
+                            src="https://www.youtube.com/embed/sFqTWM3xVLA"
+                            title="Tutorial SportClubPro"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+
                 <div class="p-6 space-y-8">
                     <!-- Table of Contents -->
                     <div class="mb-8">
