@@ -46,7 +46,8 @@ class Documentation
                         '- Numele clubului',
                         '- Adresa',
                         '- Contact',
-                        '- CIF/CUI (opțional)'
+                        '- CIF/CUI (opțional)',
+                        '- Adaugati logo-ul clubului (poza de profil) in sectiunea Profil.'
                     ],
                     'Setarea Grupelor' => [
                         'Accesați secțiunea "Grupe"',
