@@ -28,9 +28,11 @@ class Documentation
                     ],
                     'Acces și Autentificare' => [
                         'Accesați www.sportclubpro.ro',
-                        'Click pe "Înregistrare" pentru cont nou',
-                        'Sau "Login" pentru conturi existente'
+                        'Dacă accesați platforma de pe un dispozitiv mobil, aveți posibilitatea să instalați aplicația pe telefonul dumneavoastră.',
+                        'Click pe "Înregistrare" pentru a crea un cont nou',
+                        'Sau selectați "Login" pentru a vă autentifica cu un cont existent'
                     ]
+
                 ]
             ],
             [
