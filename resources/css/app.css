@@ -6,16 +6,3 @@
     display: none;
 }
 
-
-/*
- * loading screen
- */
-
-#preloader {
-    transition: opacity 0.5s ease-in-out;
-}
-
-#preloader.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
