@@ -32,3 +32,19 @@ installButton.addEventListener('click', async () => {
 window.addEventListener('appinstalled', () => {
     installButton.style.display = 'none';
 });
+
+
+// loading screen
+
+window.addEventListener('load', () => {
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        setTimeout(() => {
+            preloader.classList.add('hidden');
+            // Opțional: eliminăm complet elementul după tranziție
+            setTimeout(() => {
+                preloader.remove();
+            }, 500);
+        }, 1500); // Arătăm loading-ul pentru 1.5 secunde
+    }
+});
