@@ -33,19 +33,8 @@
                     <x-nav-link href="{{ route('events.index') }}" :active="request()->routeIs('events.index')">
                         {{ __('Evenimente') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('contact') }}" :active="request()->routeIs('contact')">
+                     <x-nav-link href="{{ route('contact') }}" :active="request()->routeIs('contact')">
                         {{ __('Contactează-ne') }}
-                    </x-nav-link>
-
-                    <x-nav-link>
-                        <button id="installAppNav" style="display: none;"
-                            class="inline-flex items-center px-4 py-2 text-sm font-semibold text-teal-600 transition-colors bg-white border-2 border-teal-600 rounded-lg shadow-lg hover:bg-teal-50 dark:bg-gray-800 dark:text-teal-400 dark:border-teal-400 dark:hover:bg-gray-700">
-                            Instalează Aplicația
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
-                        </button>
                     </x-nav-link>
 
                 </div>
@@ -215,19 +204,8 @@
             <x-responsive-nav-link href="{{ route('events.index') }}" :active="request()->routeIs('events.index')">
                 {{ __('Evenimente') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link href="{{ route('contact') }}" :active="request()->routeIs('contact')">
+             <x-responsive-nav-link href="{{ route('contact') }}" :active="request()->routeIs('contact')">
                 {{ __('Contactează-ne') }}
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link>
-                <button id="installAppNav" style="display: none;"
-                    class="inline-flex items-center px-4 py-2 text-sm font-semibold text-teal-600 transition-colors bg-white border-2 border-teal-600 rounded-lg shadow-lg hover:bg-teal-50 dark:bg-gray-800 dark:text-teal-400 dark:border-teal-400 dark:hover:bg-gray-700">
-                    Instalează Aplicația
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                </button>
             </x-responsive-nav-link>
         </div>
 
