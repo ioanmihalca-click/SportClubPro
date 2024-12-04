@@ -11,7 +11,7 @@ class ThemeToggle extends Component
     public function mount()
     {
         // Încercăm să obținem tema din localStorage
-        $this->darkMode = false; // Default la light mode
+        $this->darkMode = true; 
     }
 
     public function toggleTheme()
