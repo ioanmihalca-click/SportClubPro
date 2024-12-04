@@ -8,11 +8,11 @@ class ThemeToggle extends Component
 {
     public $darkMode = true;
 
-    public function mount()
-    {
-        // Încercăm să obținem tema din localStorage
-        $this->darkMode = true; 
-    }
+    // public function mount()
+    // {
+    //     // Încercăm să obținem tema din localStorage
+    //     $this->darkMode = false; // Default la light mode
+    // }
 
     public function toggleTheme()
     {
