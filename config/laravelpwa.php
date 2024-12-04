@@ -4,7 +4,7 @@ return [
     'manifest' => [
         'name' => env('APP_NAME', 'SportClubPro'),
         'short_name' => 'SportClubPro',
-        'start_url' => '/',
+        'start_url' => '/loading',  
         'background_color' => '#ffffff',
         'theme_color' => '#0d9488',
         'display' => 'standalone',
