@@ -132,7 +132,7 @@
 
 
     <!-- Modal de confirmare ștergere -->
-    <div x-data="{
+    <div x-cloak x-data="{
         showDeleteModal: false,
         memberToDelete: null,
         openModal(memberId) {
