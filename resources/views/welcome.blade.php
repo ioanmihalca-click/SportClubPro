@@ -160,7 +160,7 @@
 
                                 <!-- Install PWA Button -->
                                 <button id="installApp" style="display: none;"
-                                    class="inline-flex items-center px-6 py-3 font-semibold text-white transition-colors bg-teal-600 rounded-lg shadow-lg hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-600">
+                                    class="inline-flex items-center px-6 py-3 font-semibold text-teal-600 transition-colors bg-white border-2 border-teal-600 rounded-lg shadow-lg hover:bg-teal-50 dark:bg-gray-800 dark:text-teal-400 dark:border-teal-400 dark:hover:bg-gray-700">
                                     Instalează Aplicația
                                     <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
