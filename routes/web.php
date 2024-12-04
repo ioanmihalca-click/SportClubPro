@@ -16,6 +16,8 @@ Route::get('/contact', function () {
 
 Route::get('/manual', [DocumentationController::class, 'show'])->name('manual');
 
+//Middleware
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
