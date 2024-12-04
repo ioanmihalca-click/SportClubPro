@@ -17,38 +17,43 @@ class Club extends Model
     ];
 
     protected static function boot()
-{
-    parent::boot();
+    {
+        parent::boot();
 
-    static::deleting(function ($club) {
-        DB::transaction(function() use ($club) {
-            // Mai întâi ștergem prezențele
-            $club->members->each(function ($member) {
-                $member->attendances()->delete();
+        static::deleting(function ($club) {
+            DB::transaction(function() use ($club) {
+                // Mai întâi ștergem prezențele
+                $club->members->each(function ($member) {
+                    $member->attendances()->delete();
+                });
+
+                // Ștergem plățile
+                $club->members->each(function ($member) {
+                    $member->payments()->delete();
+                });
+
+                // Ștergem relațiile dintre membri și evenimente (event_participants)
+                $club->members->each(function ($member) {
+                    $member->events()->detach();
+                });
+
+                // Acum putem șterge membrii
+                $club->members()->delete();
+
+                // Ștergem grupurile
+                $club->groups()->delete();
+
+                // Ștergem tipurile de taxe
+                $club->feeTypes()->delete();
+
+                // Ștergem evenimentele
+                $club->events()->delete();
+
+                // Actualizăm utilizatorii asociați cu acest club
+                $club->users()->update(['club_id' => null]);
             });
-
-            // Apoi ștergem plățile
-            $club->members->each(function ($member) {
-                $member->payments()->delete();
-            });
-
-            // Acum putem șterge membrii
-            $club->members()->delete();
-
-            // Ștergem grupurile
-            $club->groups()->delete();
-
-            // Ștergem tipurile de taxe
-            $club->feeTypes()->delete();
-
-            // Ștergem evenimentele
-            $club->events()->delete();
-
-            // Actualizăm utilizatorii asociați cu acest club
-            $club->users()->update(['club_id' => null]);
         });
-    });
-}
+    }
 
     public function users()
     {
