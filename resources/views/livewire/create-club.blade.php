@@ -69,7 +69,7 @@
                 </div>
 
                 <div class="flex items-center justify-end">
-                    <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline dark:bg-blue-600 dark:hover:bg-blue-500" type="submit">
+                    <button class="px-4 py-2 font-bold text-white bg-teal-500 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline dark:bg-teal-600 dark:hover:bg-teal-500" type="submit">
                         Creează Club
                     </button>
                 </div>

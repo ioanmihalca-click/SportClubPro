@@ -1,7 +1,7 @@
 <div class="p-4 dark:bg-gray-800">
     <!-- Notifications -->
     @if (session()->has('message'))
-        <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">
+        <div class="p-4 mb-4 text-sm text-teal-700 bg-teal-100 rounded-lg">
             {{ session('message') }}
         </div>
     @endif
@@ -11,6 +11,33 @@
             {{ session('error') }}
         </div>
     @endif
+
+     <!-- Action Dropdown for Mobile -->
+        <div x-data="{ open: false }" class="relative">
+            <button @click="open = !open"
+                class="w-full p-3 mb-3 text-left text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
+                <span>Acțiuni</span>
+                <svg class="inline-block w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+
+            <div x-show="open" @click.away="open = false"
+                class="absolute z-50 w-full mt-2 bg-white rounded-md shadow-lg dark:bg-gray-700">
+                <a href="{{ route('members.create') }}"
+                    class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600">
+                    Adaugă Membru
+                </a>
+                <a href="{{ route('reports.members') }}"
+                    class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600">
+                    Export Membri PDF
+                </a>
+                <button @click="$dispatch('open-financial-modal')"
+                    class="w-full px-4 py-3 text-sm text-left text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600">
+                    Raport Financiar
+                </button>
+            </div>
+        </div>
 
     <!-- Search and Filters Section - Stacked on mobile -->
     <div class="space-y-4">
@@ -39,32 +66,7 @@
             </select>
         </div>
 
-        <!-- Action Dropdown for Mobile -->
-        <div x-data="{ open: false }" class="relative">
-            <button @click="open = !open"
-                class="w-full p-3 text-left text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
-                <span>Acțiuni</span>
-                <svg class="inline-block w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-            </button>
-
-            <div x-show="open" @click.away="open = false"
-                class="absolute z-50 w-full mt-2 bg-white rounded-md shadow-lg dark:bg-gray-700">
-                <a href="{{ route('members.create') }}"
-                    class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600">
-                    Adaugă Membru
-                </a>
-                <a href="{{ route('reports.members') }}"
-                    class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600">
-                    Export Membri PDF
-                </a>
-                <button @click="$dispatch('open-financial-modal')"
-                    class="w-full px-4 py-3 text-sm text-left text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600">
-                    Raport Financiar
-                </button>
-            </div>
-        </div>
+       
     </div>
 
   
@@ -86,7 +88,7 @@
                     </div>
                     <span
                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                        {{ $member->active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                        {{ $member->active ? 'bg-teal-100 text-teal-800' : 'bg-red-100 text-red-800' }}">
                         {{ $member->active ? 'Activ' : 'Inactiv' }}
                     </span>
                 </div>
@@ -108,7 +110,7 @@
 
                 <div class="flex justify-end mt-4 space-x-3">
                     <a href="{{ route('members.edit', $member) }}"
-                        class="text-teal-600 hover:text-teal-900 dark:text-teal-400 dark:hover:text-teal-300">
+                        class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
                         Edit
                     </a>
                     <button wire:click="toggleStatus({{ $member->id }})"
@@ -207,7 +209,7 @@
     </div>
 
     <!-- Modal pentru raport financiar -->
-    <div x-data="{
+    <div x-cloak x-data="{
         showModal: false,
         monthNames: ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'],
         openModal() {
@@ -292,7 +294,7 @@
                                     Anulează
                                 </button>
                                 <button type="submit"
-                                    class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm sm:w-auto hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                    class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-teal-600 border border-transparent rounded-md shadow-sm sm:w-auto hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
                                     Generează Raport
                                 </button>
                             </div>

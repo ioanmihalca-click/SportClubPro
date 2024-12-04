@@ -25,10 +25,10 @@
                             <ul class="py-1 overflow-auto max-h-60">
                                 @foreach ($filteredMembers as $member)
                                     <li wire:click="selectMember({{ $member->id }})"
-                                        class="px-4 py-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600">
+                                        class="px-4 py-3 cursor-pointer dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600">
                                         {{ $member->name }}
                                         @if ($member->group)
-                                            <span class="block text-sm text-gray-500 dark:text-gray-400">
+                                            <span class="block text-sm text-gray-500 dark:text-gray-300">
                                                 {{ $member->group->name }}
                                             </span>
                                         @endif

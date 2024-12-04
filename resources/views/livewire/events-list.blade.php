@@ -20,24 +20,43 @@
         </div>
     </div>
 
-    <!-- Events List -->
-    <div class="bg-white divide-y divide-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:divide-gray-700">
+    <!-- Events Cards Grid -->
+    <div class="space-y-4">
         @forelse($events as $event)
-            <div class="flex items-center justify-between p-6">
-                <div class="flex-1">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                        {{ $event->name }}
-                    </h3>
-                    <div class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                        <p>Data: {{ $event->date->format('d.m.Y') }}</p>
-                        <p>Tip: {{ $event->type }}</p>
-                        @if ($event->details)
-                            <p class="mt-2">{{ $event->details }}</p>
-                        @endif
+            <div class="p-4 bg-white rounded-lg shadow dark:bg-gray-700">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            {{ $loop->iteration }}. {{ $event->name }}
+                        </h3>
+                        <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            Data: {{ $event->date->format('d.m.Y') }}
+                        </div>
                     </div>
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                        {{ $event->date->isFuture() ? 'bg-teal-100 text-teal-800' : 'bg-gray-100 text-gray-800' }}">
+                        {{ $event->date->isFuture() ? 'Viitor' : 'Trecut' }}
+                    </span>
                 </div>
-                
-                <div class="flex space-x-3">
+
+                <div class="grid grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Tip Eveniment</span>
+                        <p class="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                            {{ $event->type }}
+                        </p>
+                    </div>
+                    @if($event->details)
+                    <div>
+                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Detalii</span>
+                        <p class="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                            {{ $event->details }}
+                        </p>
+                    </div>
+                    @endif
+                </div>
+
+                <div class="flex justify-end mt-4 space-x-3">
                     <a href="{{ route('events.participants', $event) }}"
                         class="text-teal-600 hover:text-teal-900 dark:text-teal-400 dark:hover:text-teal-300">
                         Participanți
@@ -58,13 +77,8 @@
             </div>
         @endforelse
 
-        <div class="p-4">
+        <div class="mt-4">
             {{ $events->links() }}
         </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div x-data="{ showDeleteModal: false, eventToDelete: null }" @confirm-delete.window="showDeleteModal = true; eventToDelete = $event.detail.id">
-        <!-- Modal implementation similar to members delete modal -->
     </div>
 </div>

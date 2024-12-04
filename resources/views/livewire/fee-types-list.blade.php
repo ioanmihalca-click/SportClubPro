@@ -22,7 +22,7 @@
                 @error('description') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
             </div>
 
-            <button type="submit" class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
+            <button type="submit" class="px-4 py-2 font-bold text-white bg-teal-500 rounded hover:bg-teal-700">
                 Adaugă Tip Cotizație
             </button>
         </form>

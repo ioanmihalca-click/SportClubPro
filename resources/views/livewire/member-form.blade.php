@@ -85,7 +85,7 @@
 
         <div class="flex justify-end">
             <button type="submit"
-                class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-indigo-600 border border-transparent rounded-md dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring focus:ring-indigo-300 disabled:opacity-25">
+                class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-teal-600 border border-transparent rounded-md dark:bg-teal-500 hover:bg-teal-700 dark:hover:bg-teal-600 active:bg-teal-900 focus:outline-none focus:border-teal-900 focus:ring focus:ring-teal-300 disabled:opacity-25">
                 {{ $isEdit ? 'Actualizează' : 'Adaugă' }} Membru
             </button>
         </div>
