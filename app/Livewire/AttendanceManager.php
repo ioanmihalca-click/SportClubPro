@@ -58,7 +58,7 @@ class AttendanceManager extends Component
 
     public function setActiveTab($tab)
     {
-        $this->reset(['selectedGroup', 'selectedMember', 'attendees']);
+        // Modifică ordinea operațiilor
         $this->activeTab = $tab;
         
         if ($tab === 'mark') {
@@ -66,6 +66,13 @@ class AttendanceManager extends Component
         } else {
             $this->startDate = now()->startOfMonth()->format('Y-m-d');
             $this->endDate = now()->endOfMonth()->format('Y-m-d');
+        }
+        
+        // Resetează după ce ai setat valorile necesare
+        $this->reset(['selectedGroup', 'selectedMember', 'attendees']);
+        
+        if ($tab === 'mark') {
+            $this->resetAttendees();
         }
     }
 
@@ -133,17 +140,32 @@ class AttendanceManager extends Component
     }
 
     public function render()
-    {
+{
+    // Adaugă verificări pentru a evita erorile null
+    $user = Auth::user();
+    $club = $user->club;
+
+    if (!$club) {
         return view('livewire.attendance-manager', [
-            'groups' => Auth::user()->club->groups,
-            'members' => $this->selectedGroup ? Member::where('group_id', $this->selectedGroup)
-                ->where('active', true)
-                ->get() : collect([]),
-            'allMembers' => Member::where('club_id', Auth::user()->club_id)
-                ->where('active', true)
-                ->orderBy('name')
-                ->get(),
-            'attendanceStats' => $this->activeTab === 'view' ? $this->getAttendanceStats() : null
+            'groups' => collect([]),
+            'members' => collect([]),
+            'allMembers' => collect([]),
+            'attendanceStats' => null
         ]);
     }
+
+    return view('livewire.attendance-manager', [
+        'groups' => $club->groups,
+        'members' => $this->selectedGroup 
+            ? Member::where('group_id', $this->selectedGroup)
+                ->where('active', true)
+                ->get() 
+            : collect([]),
+        'allMembers' => Member::where('club_id', $club->id)
+            ->where('active', true)
+            ->orderBy('name')
+            ->get(),
+        'attendanceStats' => $this->activeTab === 'view' ? $this->getAttendanceStats() : null
+    ]);
+}
 }
