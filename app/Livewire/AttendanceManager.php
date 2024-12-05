@@ -6,29 +6,37 @@ use Livewire\Component;
 use App\Models\Attendance;
 use App\Models\Member;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class AttendanceManager extends Component
 {
     public $selectedDate;
     public $selectedGroup;
     public $attendees = [];
+    public $activeTab = 'mark';
+    
+    // Pentru vizualizare
+    public $startDate;
+    public $endDate;
+    public $selectedMember;
 
     public function mount()
     {
         $this->selectedDate = now()->format('Y-m-d');
+        $this->startDate = now()->startOfMonth()->format('Y-m-d');
+        $this->endDate = now()->endOfMonth()->format('Y-m-d');
+        $this->resetAttendees();
     }
 
-    public function updatedSelectedGroup($value)
+    public function resetAttendees()
     {
-        if ($value) {
-            // Preîncarcă prezențele existente pentru data și grupa selectată
+        if ($this->selectedGroup) {
             $existingAttendances = Attendance::where('date', $this->selectedDate)
-                ->where('group_id', $value)
+                ->where('group_id', $this->selectedGroup)
                 ->pluck('member_id')
                 ->toArray();
 
-            // Pregătește array-ul de prezențe
-            $this->attendees = Member::where('group_id', $value)
+            $this->attendees = Member::where('group_id', $this->selectedGroup)
                 ->where('active', true)
                 ->get()
                 ->mapWithKeys(function ($member) use ($existingAttendances) {
@@ -38,11 +46,64 @@ class AttendanceManager extends Component
         }
     }
 
+    public function updatedSelectedGroup($value)
+    {
+        $this->resetAttendees();
+    }
+
     public function updatedSelectedDate($value)
     {
-        if ($this->selectedGroup) {
-            $this->updatedSelectedGroup($this->selectedGroup);
+        $this->resetAttendees();
+    }
+
+    public function setActiveTab($tab)
+    {
+        $this->reset(['selectedGroup', 'selectedMember', 'attendees']);
+        $this->activeTab = $tab;
+        
+        if ($tab === 'mark') {
+            $this->selectedDate = now()->format('Y-m-d');
+        } else {
+            $this->startDate = now()->startOfMonth()->format('Y-m-d');
+            $this->endDate = now()->endOfMonth()->format('Y-m-d');
         }
+    }
+
+    public function getAttendanceStats()
+    {
+        $query = Attendance::query()
+            ->when($this->selectedGroup, function ($query) {
+                $query->where('group_id', $this->selectedGroup);
+            })
+            ->when($this->selectedMember, function ($query) {
+                $query->where('member_id', $this->selectedMember);
+            })
+            ->whereBetween('date', [$this->startDate, $this->endDate]);
+
+        $attendances = $query->get()
+            ->groupBy('member_id');
+
+        return Member::where('club_id', Auth::user()->club_id)
+            ->when($this->selectedGroup, function ($query) {
+                $query->where('group_id', $this->selectedGroup);
+            })
+            ->when($this->selectedMember, function ($query) {
+                $query->where('id', $this->selectedMember);
+            })
+            ->where('active', true)
+            ->get()
+            ->map(function ($member) use ($attendances) {
+                $memberAttendances = $attendances[$member->id] ?? collect([]);
+                return [
+                    'id' => $member->id,
+                    'name' => $member->name,
+                    'group' => $member->group ? $member->group->name : 'Fără grupă',
+                    'total_attendances' => $memberAttendances->count(),
+                    'attendance_dates' => $memberAttendances->pluck('date')->map(function($date) {
+                        return Carbon::parse($date)->format('Y-m-d');
+                    })->toArray()
+                ];
+            });
     }
 
     public function saveAttendance()
@@ -77,7 +138,12 @@ class AttendanceManager extends Component
             'groups' => Auth::user()->club->groups,
             'members' => $this->selectedGroup ? Member::where('group_id', $this->selectedGroup)
                 ->where('active', true)
-                ->get() : collect([])
+                ->get() : collect([]),
+            'allMembers' => Member::where('club_id', Auth::user()->club_id)
+                ->where('active', true)
+                ->orderBy('name')
+                ->get(),
+            'attendanceStats' => $this->activeTab === 'view' ? $this->getAttendanceStats() : null
         ]);
     }
 }
