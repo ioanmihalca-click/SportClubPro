@@ -103,7 +103,7 @@
                 <nav class="flex items-center space-x-4">
                     @auth
                         <a href="{{ url('/dashboard') }}"
-                            class="font-semibold text-gray-700 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400">Dashboard</a>
+                            class="font-semibold text-gray-700 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400">Tablou de bord</a>
                     @else
                         <a href="{{ route('login') }}"
                             class="font-semibold text-gray-700 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400">Login</a>
