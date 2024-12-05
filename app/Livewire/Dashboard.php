@@ -55,6 +55,31 @@ class Dashboard extends Component
             'data' => $membersEvolution->pluck('total')->toArray()
         ];
 
+        // Obținem membrii cu restanțe cu detalii
+        $unpaidMembers = Member::where('club_id', $club_id)
+            ->where('active', true)
+            ->whereDoesntHave('payments', function ($query) {
+                $query->whereYear('payment_date', now()->year)
+                    ->whereMonth('payment_date', now()->month);
+            })
+            ->with(['group', 'feeType', 'payments' => function ($query) {
+                $query->latest('payment_date')->limit(1);
+            }])
+            ->get()
+            ->map(function ($member) {
+                $lastPayment = $member->payments->first();
+                return [
+                    'id' => $member->id,
+                    'name' => $member->name,
+                    'group' => $member->group ? $member->group->name : 'Fără grupă',
+                    'fee_type' => $member->feeType ? $member->feeType->name : 'Nespecificat',
+                    'last_payment_date' => $lastPayment ? $lastPayment->payment_date->format('d.m.Y') : 'Nicio plată',
+                    'last_payment_amount' => $lastPayment ? $lastPayment->amount : 0,
+                    'phone' => $member->phone ?? 'Nespecificat',
+                    'email' => $member->email ?? 'Nespecificat'
+                ];
+            })->values()->toArray();
+
         return [
             'total_members' => Member::where('club_id', $club_id)
                 ->where('active', true)
@@ -81,12 +106,8 @@ class Dashboard extends Component
                 $query->where('club_id', $club_id);
             })->whereDate('date', today())->count(),
 
-            'unpaid_members' => Member::where('club_id', $club_id)
-                ->where('active', true)
-                ->whereDoesntHave('payments', function ($query) {
-                    $query->whereYear('payment_date', now()->year)
-                        ->whereMonth('payment_date', now()->month);
-                })->count(),
+            'unpaid_members_count' => count($unpaidMembers),
+            'unpaid_members_details' => $unpaidMembers,
 
             'charts' => [
                 'payments' => $paymentsData,
@@ -94,7 +115,6 @@ class Dashboard extends Component
             ]
         ];
     }
-
 
     public function render()
     {
