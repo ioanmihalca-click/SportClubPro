@@ -18,7 +18,7 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    
+
     protected static ?string $modelLabel = 'Utilizator';
     protected static ?string $pluralModelLabel = 'Utilizatori';
 
@@ -32,21 +32,21 @@ class UserResource extends Resource
                             ->label('Nume')
                             ->required()
                             ->maxLength(255),
-                            
+
                         Forms\Components\TextInput::make('email')
                             ->label('Email')
                             ->email()
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
-                            
+
                         Forms\Components\TextInput::make('password')
                             ->label('Parolă')
                             ->password()
-                            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                            ->dehydrated(fn ($state) => filled($state))
-                            ->required(fn (string $operation): bool => $operation === 'create'),
-                            
+                            ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                            ->dehydrated(fn($state) => filled($state))
+                            ->required(fn(string $operation): bool => $operation === 'create'),
+
                         Forms\Components\Select::make('club_id')
                             ->label('Club')
                             ->relationship('club', 'name')
@@ -61,26 +61,21 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('name')
+                    ->color('primary')
+                    ->weight(FontWeight::Bold)
+                    ->searchable()
+                    ->sortable(),
+
                 Tables\Columns\Layout\Stack::make([
-                    // Numele Utilizatorului
-                    Tables\Columns\TextColumn::make('name')
-                        ->color('primary')
-                        ->weight(FontWeight::Bold)
-                        ->searchable()
-                        ->sortable(),
-                        
-                    // Email    
                     Tables\Columns\TextColumn::make('email')
-                        ->formatStateUsing(fn ($state) => "Email: {$state}"),
-                        
-                    // Club    
+                        ->formatStateUsing(fn($state) => "Email: {$state}"),
                     Tables\Columns\TextColumn::make('club.name')
-                        ->formatStateUsing(fn ($state) => $state ? "Club: {$state}" : "Fără club"),
-                        
-                    // Data înregistrării    
+                        ->formatStateUsing(fn($state) => $state ? "Club: {$state}" : "Fără club"),
                     Tables\Columns\TextColumn::make('created_at')
                         ->dateTime('d/m/Y H:i'),
                 ])
+                
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('club')
@@ -98,8 +93,9 @@ class UserResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->recordClasses('space-y-2');
+            
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -109,9 +105,9 @@ class UserResource extends Resource
         ];
     }
 
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->where('email', '!=', 'contact@sportclubpro.ro');
-    }
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     return parent::getEloquentQuery()
+    //         ->where('email', '!=', 'contact@sportclubpro.ro');
+    // }
 }
