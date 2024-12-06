@@ -10,7 +10,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Support\Enums\FontWeight;
-use Illuminate\Support\Facades\Route;
 
 class ClubResource extends Resource
 {
@@ -55,61 +54,29 @@ class ClubResource extends Resource
 
     public static function table(Table $table): Table
     {
-        $isMobile = Route::is('filament.app.resources.clubs.index') && ! request()->isXmlHttpRequest();
-
         return $table
             ->columns([
-                $isMobile ? 
-                    // Mobile Layout
-                    Tables\Columns\Layout\Stack::make([
-                        Tables\Columns\TextColumn::make('name')
-                            ->label('Club')
-                            ->size('lg')
-                            ->weight(FontWeight::Bold)
-                            ->searchable()
-                            ->sortable()
-                            ->color('primary'),
-
-                        Tables\Columns\Layout\Split::make([
-                            Tables\Columns\TextColumn::make('members_count')
-                                ->label('Membri')
-                                ->prefix('Membri: ')
-                                ->counts('members')
-                                ->suffix(' membri')
-                                ->size('md'),
-                                
-                            Tables\Columns\TextColumn::make('users.name')
-                                ->prefix('Administrator: ')
-                                ->size('md'),
-                        ]),
-                            
-                        Tables\Columns\TextColumn::make('created_at')
-                            ->label('Înregistrat')
-                            ->dateTime('d/m/Y H:i')
-                            ->icon('heroicon-m-calendar')
-                            ->size('sm'),
-                    ]) :
-                    // Desktop Layout
-                    Tables\Columns\Layout\Stack::make([
-                        Tables\Columns\TextColumn::make('name')
-                            ->label('Nume Club')
-                            ->searchable()
-                            ->sortable()
-                            ->color('primary'),
-                            
-                        Tables\Columns\TextColumn::make('members_count')
-                            ->label('Membri')
-                            ->prefix('Membri: ')
-                            ->counts('members'),
-                            
-                        Tables\Columns\TextColumn::make('users.name')
-                            ->label('Administrator')
-                            ->prefix('Administrator: '),
-                            
-                        Tables\Columns\TextColumn::make('created_at')
-                            ->label('Data înregistrării')
-                            ->dateTime('d/m/Y H:i'),
-                    ]),
+                Tables\Columns\Layout\Stack::make([
+                    // Numele Clubului
+                    Tables\Columns\TextColumn::make('name')
+                        ->color('primary')
+                        ->weight(FontWeight::Bold)
+                        ->searchable()
+                        ->sortable(),
+                        
+                    // Membri
+                    Tables\Columns\TextColumn::make('members_count')
+                        ->formatStateUsing(fn ($state) => "Membri: {$state}")
+                        ->counts('members'),
+                        
+                    // Administrator    
+                    Tables\Columns\TextColumn::make('users.name')
+                        ->formatStateUsing(fn ($state) => "Administrator: {$state}"),
+                        
+                    // Data înregistrării    
+                    Tables\Columns\TextColumn::make('created_at')
+                        ->dateTime('d/m/Y H:i'),
+                ])
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('user')
@@ -125,7 +92,8 @@ class ClubResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('created_at', 'desc');
+            ->defaultSort('created_at', 'desc')
+            ->recordClasses('space-y-2');
     }
     
     public static function getPages(): array

@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Support\Enums\FontWeight;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Hash;
 
@@ -20,12 +21,6 @@ class UserResource extends Resource
     
     protected static ?string $modelLabel = 'Utilizator';
     protected static ?string $pluralModelLabel = 'Utilizatori';
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->where('email', '!=', 'contact@sportclubpro.ro');
-    }
 
     public static function form(Form $form): Form
     {
@@ -42,15 +37,15 @@ class UserResource extends Resource
                             ->label('Email')
                             ->email()
                             ->required()
-                            ->maxLength(255)
-                            ->unique(User::class, 'email', ignoreRecord: true),
+                            ->unique(ignoreRecord: true)
+                            ->maxLength(255),
                             
                         Forms\Components\TextInput::make('password')
                             ->label('Parolă')
                             ->password()
                             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                             ->dehydrated(fn ($state) => filled($state))
-                            ->required(fn (string $context): bool => $context === 'create'),
+                            ->required(fn (string $operation): bool => $operation === 'create'),
                             
                         Forms\Components\Select::make('club_id')
                             ->label('Club')
@@ -58,6 +53,7 @@ class UserResource extends Resource
                             ->searchable()
                             ->preload(),
                     ])
+                    ->columns(2)
             ]);
     }
 
@@ -65,38 +61,31 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Nume')
-                    ->searchable()
-                    ->sortable(),
-                    
-                Tables\Columns\TextColumn::make('email')
-                    ->label('Email')
-                    ->searchable()
-                    ->sortable(),
-                    
-                Tables\Columns\TextColumn::make('club.name')
-                    ->label('Club')
-                    ->searchable()
-                    ->sortable(),
-                    
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Data înregistrării')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable(),
-                    
-                Tables\Columns\IconColumn::make('email_verified_at')
-                    ->label('Email verificat')
-                    ->boolean()
-                    ->sortable(),
+                Tables\Columns\Layout\Stack::make([
+                    // Numele Utilizatorului
+                    Tables\Columns\TextColumn::make('name')
+                        ->color('primary')
+                        ->weight(FontWeight::Bold)
+                        ->searchable()
+                        ->sortable(),
+                        
+                    // Email    
+                    Tables\Columns\TextColumn::make('email')
+                        ->formatStateUsing(fn ($state) => "Email: {$state}"),
+                        
+                    // Club    
+                    Tables\Columns\TextColumn::make('club.name')
+                        ->formatStateUsing(fn ($state) => $state ? "Club: {$state}" : "Fără club"),
+                        
+                    // Data înregistrării    
+                    Tables\Columns\TextColumn::make('created_at')
+                        ->dateTime('d/m/Y H:i'),
+                ])
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('club')
-                    ->relationship('club', 'name'),
-                    
-                Tables\Filters\Filter::make('email_verified')
-                    ->label('Email verificat')
-                    ->query(fn (Builder $query) => $query->whereNotNull('email_verified_at')),
+                    ->label('Club')
+                    ->relationship('club', 'name')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -106,7 +95,9 @@ class UserResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc')
+            ->recordClasses('space-y-2');
     }
     
     public static function getPages(): array
@@ -116,5 +107,11 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('email', '!=', 'contact@sportclubpro.ro');
     }
 }
