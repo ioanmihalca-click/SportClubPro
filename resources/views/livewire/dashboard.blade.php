@@ -283,7 +283,7 @@
                </button>
            </div>
 
-           <!-- Content -->
+           <!-- Continut -->
            <div class="p-4">
                <!-- Table pentru desktop -->
                <div class="hidden md:block">
