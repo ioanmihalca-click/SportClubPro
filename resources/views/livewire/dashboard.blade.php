@@ -235,156 +235,151 @@
 
 
     <!-- Modal Membri cu Restanțe -->
-    <div x-cloak x-data="{
-        show: false,
-        sortField: 'name',
-        sortDirection: 'asc',
-        members: @js($stats['unpaid_members_details']),
-        sort() {
-            this.members.sort((a, b) => {
-                let aVal = a[this.sortField],
-                    bVal = b[this.sortField];
-                return this.sortDirection === 'asc' ?
-                    (aVal > bVal ? 1 : -1) :
-                    (aVal < bVal ? 1 : -1);
-            });
-        },
-        sortData(field) {
-            if (this.sortField === field) {
-                this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-            } else {
-                this.sortField = field;
-                this.sortDirection = 'asc';
-            }
-            this.sort();
-        }
-    }" @open-unpaid-modal.window="show = true; sort()"
-        @keydown.escape.window="show = false">
+<div x-cloak 
+    x-show="show"
+    x-data="{
+   show: false,
+   sortField: 'name',
+   sortDirection: 'asc',
+   members: @js($stats['unpaid_members_details']),
+   sort() {
+       this.members.sort((a, b) => {
+           let aVal = a[this.sortField],
+               bVal = b[this.sortField];
+           return this.sortDirection === 'asc' ?
+               (aVal > bVal ? 1 : -1) :
+               (aVal < bVal ? 1 : -1);
+       });
+   },
+   sortData(field) {
+       if (this.sortField === field) {
+           this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+       } else {
+           this.sortField = field;
+           this.sortDirection = 'asc';
+       }
+       this.sort();
+   }
+}" 
+   @open-unpaid-modal.window="show = true; sort()" 
+   @keydown.escape.window="show = false"
+   class="relative z-50">
+   
+   <!-- Backdrop -->
+   <div class="fixed inset-0 z-40 bg-gray-500 bg-opacity-75" @click="show = false"></div>
 
-        <!-- Backdrop -->
-        <div x-show="show" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
-            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-            class="fixed inset-0 z-40 bg-gray-500 bg-opacity-75" @click="show = false">
-        </div>
+   <!-- Modal -->
+   <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+       <div class="w-full max-w-4xl bg-white rounded-lg shadow-xl dark:bg-gray-800" @click.away="show = false">
+           <!-- Header -->
+           <div class="flex items-center justify-between p-4 border-b dark:border-gray-700">
+               <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                   Membri cu Restanțe - {{ now()->format('F Y') }}
+               </h3>
+               <button @click="show = false" class="text-gray-400 hover:text-gray-500">
+                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                   </svg>
+               </button>
+           </div>
 
-        <!-- Modal -->
-        <div x-show="show" x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0 transform scale-90"
-            x-transition:enter-end="opacity-100 transform scale-100"
-            x-transition:leave="transition ease-in duration-200"
-            x-transition:leave-start="opacity-100 transform scale-100"
-            x-transition:leave-end="opacity-0 transform scale-90"
-            class="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div class="w-full max-w-4xl bg-white rounded-lg shadow-xl dark:bg-gray-800" @click.away="show = false">
-                <!-- Header -->
-                <div class="flex items-center justify-between p-4 border-b dark:border-gray-700">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                        Membri cu Restanțe - {{ now()->format('F Y') }}
-                    </h3>
-                    <button @click="show = false" class="text-gray-400 hover:text-gray-500">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
+           <!-- Content -->
+           <div class="p-4">
+               <!-- Table pentru desktop -->
+               <div class="hidden md:block">
+                   <div class="h-[calc(100vh-16rem)] overflow-y-auto">
+                       <table class="w-full">
+                           <thead class="sticky top-0 bg-white dark:bg-gray-800">
+                               <tr class="text-xs font-medium tracking-wider text-left text-gray-500 uppercase border-b dark:border-gray-700">
+                                   <th class="p-4 cursor-pointer" @click="sortData('name')">
+                                       <div class="flex items-center space-x-1">
+                                           <span>Nume</span>
+                                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                                           </svg>
+                                       </div>
+                                   </th>
+                                   <th class="p-4">Contact</th>
+                                   <th class="p-4">Grupă</th>
+                                   <th class="p-4">Tip Cotizație</th>
+                                   <th class="p-4 cursor-pointer" @click="sortData('last_payment_date')">
+                                       <div class="flex items-center space-x-1">
+                                           <span>Ultima Plată</span>
+                                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                                           </svg>
+                                       </div>
+                                   </th>
+                               </tr>
+                           </thead>
+                           <tbody>
+                               <template x-for="member in members" :key="member.id">
+                                   <tr class="border-b dark:border-gray-700">
+                                       <td class="p-4 text-gray-900 dark:text-gray-100" x-text="member.name"></td>
+                                       <td class="p-4 text-gray-600 dark:text-gray-400">
+                                           <div class="text-sm" x-text="member.phone"></div>
+                                           <div class="text-sm" x-text="member.email"></div>
+                                       </td>
+                                       <td class="p-4 text-gray-600 dark:text-gray-400" x-text="member.group"></td>
+                                       <td class="p-4 text-gray-600 dark:text-gray-400" x-text="member.fee_type"></td>
+                                       <td class="p-4 text-gray-600 dark:text-gray-400">
+                                           <div x-text="member.last_payment_date"></div>
+                                           <div class="text-sm" x-show="member.last_payment_amount > 0">
+                                               <span x-text="member.last_payment_amount"></span> RON
+                                           </div>
+                                       </td>
+                                   </tr>
+                               </template>
+                           </tbody>
+                       </table>
+                   </div>
+               </div>
 
-                <!-- Content -->
-                <div class="p-4">
-                    <!-- Table pentru desktop -->
-                    <div class="hidden overflow-x-auto md:block">
-                        <table class="w-full">
-                            <thead>
-                                <tr
-                                    class="text-xs font-medium tracking-wider text-left text-gray-500 uppercase border-b dark:border-gray-700">
-                                    <th class="p-4 cursor-pointer" @click="sortData('name')">
-                                        <div class="flex items-center space-x-1">
-                                            <span>Nume</span>
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                                            </svg>
-                                        </div>
-                                    </th>
-                                    <th class="p-4">Contact</th>
-                                    <th class="p-4">Grupă</th>
-                                    <th class="p-4">Tip Cotizație</th>
-                                    <th class="p-4 cursor-pointer" @click="sortData('last_payment_date')">
-                                        <div class="flex items-center space-x-1">
-                                            <span>Ultima Plată</span>
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                                            </svg>
-                                        </div>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <template x-for="member in members" :key="member.id">
-                                    <tr class="border-b dark:border-gray-700">
-                                        <td class="p-4 text-gray-900 dark:text-gray-100" x-text="member.name"></td>
-                                        <td class="p-4 text-gray-600 dark:text-gray-400">
-                                            <div class="text-sm" x-text="member.phone"></div>
-                                            <div class="text-sm" x-text="member.email"></div>
-                                        </td>
-                                        <td class="p-4 text-gray-600 dark:text-gray-400" x-text="member.group"></td>
-                                        <td class="p-4 text-gray-600 dark:text-gray-400" x-text="member.fee_type">
-                                        </td>
-                                        <td class="p-4 text-gray-600 dark:text-gray-400">
-                                            <div x-text="member.last_payment_date"></div>
-                                            <div class="text-sm" x-show="member.last_payment_amount > 0">
-                                                <span x-text="member.last_payment_amount"></span> RON
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>
-                    </div>
+               <!-- Cards pentru mobile -->
+               <div class="md:hidden">
+                   <div class="h-[calc(100vh-12rem)] overflow-y-auto">
+                       <div class="space-y-4">
+                           <template x-for="member in members" :key="member.id">
+                               <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
+                                   <div class="flex items-start justify-between mb-2">
+                                       <div class="font-medium text-gray-900 dark:text-gray-100" x-text="member.name"></div>
+                                       <div class="text-sm text-gray-500 dark:text-gray-400" x-text="member.group"></div>
+                                   </div>
 
-                    <!-- Cards pentru mobile -->
-                    <div class="space-y-4 md:hidden">
-                        <template x-for="member in members" :key="member.id">
-                            <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
-                                <div class="flex items-start justify-between mb-2">
-                                    <div class="font-medium text-gray-900 dark:text-gray-100" x-text="member.name">
-                                    </div>
-                                    <div class="text-sm text-gray-500 dark:text-gray-400" x-text="member.group"></div>
-                                </div>
+                                   <div class="space-y-2 text-sm">
+                                       <!-- Contact -->
+                                       <div class="flex flex-col text-gray-600 dark:text-gray-400">
+                                           <div x-show="member.phone !== 'Nespecificat'">
+                                               <span x-text="member.phone"></span>
+                                           </div>
+                                           <div x-show="member.email !== 'Nespecificat'">
+                                               <span x-text="member.email"></span>
+                                           </div>
+                                       </div>
 
-                                <div class="space-y-2 text-sm">
-                                    <!-- Contact -->
-                                    <div class="flex flex-col text-gray-600 dark:text-gray-400">
-                                        <div x-show="member.phone !== 'Nespecificat'">
-                                            <span x-text="member.phone"></span>
-                                        </div>
-                                        <div x-show="member.email !== 'Nespecificat'">
-                                            <span x-text="member.email"></span>
-                                        </div>
-                                    </div>
+                                       <!-- Cotizație -->
+                                       <div class="text-gray-600 dark:text-gray-400">
+                                           <span class="font-medium">Tip Cotizație:</span>
+                                           <span x-text="member.fee_type"></span>
+                                       </div>
 
-                                    <!-- Cotizație -->
-                                    <div class="text-gray-600 dark:text-gray-400">
-                                        <span class="font-medium">Tip Cotizație:</span>
-                                        <span x-text="member.fee_type"></span>
-                                    </div>
-
-                                    <!-- Ultima plată -->
-                                    <div class="text-gray-600 dark:text-gray-400">
-                                        <span class="font-medium">Ultima plată:</span>
-                                        <div class="flex items-center space-x-2">
-                                            <span x-text="member.last_payment_date"></span>
-                                            <span x-show="member.last_payment_amount > 0">
-                                                (<span x-text="member.last_payment_amount"></span> RON)
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
+                                       <!-- Ultima plată -->
+                                       <div class="text-gray-600 dark:text-gray-400">
+                                           <span class="font-medium">Ultima plată:</span>
+                                           <div class="flex items-center space-x-2">
+                                               <span x-text="member.last_payment_date"></span>
+                                               <span x-show="member.last_payment_amount > 0">
+                                                   (<span x-text="member.last_payment_amount"></span> RON)
+                                               </span>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                           </template>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </div>
+   </div>
+</div>
