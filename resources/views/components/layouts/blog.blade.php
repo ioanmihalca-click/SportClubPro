@@ -1,4 +1,3 @@
-<!-- resources/views/components/layouts/blog.blade.php -->
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 
@@ -114,13 +113,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="mt-12 bg-white shadow dark:bg-gray-800">
-        <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div class="text-center text-gray-500 dark:text-gray-400">
-                <p>&copy; {{ date('Y') }} SportClubPro. Toate drepturile rezervate.</p>
-            </div>
-        </div>
-    </footer>
+   <x-footer />
 </body>
 
 </html>

@@ -34,7 +34,7 @@
     @if($post->featured_image)
         <div class="mb-8">
             <img 
-                src="{{ $post->featured_image }}" 
+                src="{{ $post->featured_image_url }}" 
                 alt="{{ $post->title }}" 
                 class="w-full rounded-lg shadow-lg"
             >

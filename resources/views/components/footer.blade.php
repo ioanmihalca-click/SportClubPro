@@ -32,6 +32,13 @@
                                 <span>Manual Utilizare</span>
                             </a>
                         </li>
+                          <li>
+                            <a href="{{ route('blog.index') }}" 
+                               class="flex items-center text-sm text-gray-600 transition-all duration-300 group hover:text-teal-600 dark:text-gray-400 dark:hover:text-teal-400">
+                                <span class="w-0 h-px mr-0 transition-all duration-300 bg-teal-600 group-hover:w-2 dark:bg-teal-400 group-hover:mr-2"></span>
+                                <span>Blog</span>
+                            </a>
+                        </li>
                         <li>
                             <a href="{{ route('contact') }}" 
                                class="flex items-center text-sm text-gray-600 transition-all duration-300 group hover:text-teal-600 dark:text-gray-400 dark:hover:text-teal-400">

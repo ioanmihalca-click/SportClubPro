@@ -43,12 +43,12 @@
                     @foreach($posts as $post)
                         <article class="overflow-hidden bg-white rounded-lg shadow dark:bg-gray-800">
                             @if($post->featured_image)
-                                <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" class="object-cover w-full h-48">
+                                 <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" class="object-cover w-full h-auto">
                             @endif
                             <div class="p-6">
                                 <span class="text-sm text-teal-600 dark:text-teal-400">{{ $post->category->name }}</span>
                                 <h3 class="mt-2 text-xl font-semibold">
-                                    <a href="/blog/{{ $post->slug }}" class="text-gray-900 dark:text-white hover:text-teal-600 dark:hover:text-teal-400">
+                                    <a href="/blog/{{ $post->slug }}" class="text-gray-900 line-clamp-2 dark:text-white hover:text-teal-600 dark:hover:text-teal-400">
                                         {{ $post->title }}
                                     </a>
                                 </h3>

@@ -52,4 +52,15 @@ class Post extends Model
     {
         $this->increment('views_count');
     }
+
+    public function getFeaturedImageUrlAttribute()
+    {
+        if (!$this->featured_image) {
+            return null;
+        }
+        
+        // Asigurăm-ne că returnăm o cale absolută
+        return url($this->featured_image);
+    }
+    
 }
