@@ -100,6 +100,10 @@
                 <div class="relative ms-3">
                     <livewire:theme-toggle />
                 </div>
+                  <div class="relative ms-3">
+                   <livewire:notifications-widget>
+                </div>
+
 
                 <!-- Settings Dropdown -->
                 <div class="relative ms-3">
@@ -165,6 +169,10 @@
                 <div class="me-2">
                     <livewire:theme-toggle />
                 </div>
+                         <div class="me-2">
+                   <livewire:notifications-widget>
+                </div>
+
 
                 <button @click="open = ! open"
                     class="inline-flex items-center justify-center p-2 text-gray-400 transition duration-150 ease-in-out rounded-md dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400">
