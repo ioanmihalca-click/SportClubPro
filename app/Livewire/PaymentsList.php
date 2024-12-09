@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Payment;
 use App\Models\Member;
+use App\Models\Group;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,6 +23,7 @@ class PaymentsList extends Component
     
     // Proprietăți pentru filtrare
     public $filterMemberId = '';
+    public $filterGroupId = ''; // Adăugăm proprietatea pentru filtrul după grupă
     public $dateFrom = '';
     public $dateTo = '';
 
@@ -71,7 +73,7 @@ class PaymentsList extends Component
 
     public function resetFilters()
     {
-        $this->reset(['filterMemberId', 'dateFrom', 'dateTo', 'search']);
+        $this->reset(['filterMemberId', 'filterGroupId', 'dateFrom', 'dateTo', 'search']); // Adăugăm filterGroupId la reset
         $this->dateFrom = now()->startOfMonth()->format('Y-m-d');
         $this->dateTo = now()->endOfMonth()->format('Y-m-d');
     }
@@ -130,6 +132,11 @@ class PaymentsList extends Component
             ->when($this->filterMemberId, function ($query) {
                 $query->where('member_id', $this->filterMemberId);
             })
+            ->when($this->filterGroupId, function ($query) { // Adăugăm filtrarea după grupă
+                $query->whereHas('member', function ($q) {
+                    $q->where('group_id', $this->filterGroupId);
+                });
+            })
             ->when($this->dateFrom, function ($query) {
                 $query->whereDate('payment_date', '>=', $this->dateFrom);
             })
@@ -141,7 +148,7 @@ class PaymentsList extends Component
     public function getPayments()
     {
         return $this->getPaymentsQuery()
-            ->with(['member', 'feeType'])
+            ->with(['member.group', 'feeType']) // Adăugăm eager loading pentru group
             ->latest('payment_date')
             ->paginate(10);
     }
@@ -154,6 +161,9 @@ class PaymentsList extends Component
             'payments' => $payments,
             'members' => Member::where('club_id', Auth::user()->club_id)
                 ->where('active', true)
+                ->orderBy('name')
+                ->get(),
+            'groups' => Group::where('club_id', Auth::user()->club_id) // Adăugăm grupele pentru filtru
                 ->orderBy('name')
                 ->get(),
             'feeTypes' => Auth::user()->club->feeTypes,

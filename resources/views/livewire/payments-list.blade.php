@@ -98,84 +98,67 @@
             class="w-full p-3 border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
     </div>
 
-    <!-- Adăugăm secțiunea de filtre după search -->
-    <div class="p-4 mb-4 bg-white rounded-lg shadow dark:bg-gray-800">
-        <h3 class="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
-            Filtre
-        </h3>
+   <!-- Secțiunea de filtre -->
+<div class="p-4 mb-4 bg-white rounded-lg shadow dark:bg-gray-800">
+    <h3 class="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
+        Filtre
+    </h3>
 
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <!-- Filtrare după membru -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Filtru Membru
-                </label>
-                <select wire:model.live="filterMemberId"
-                    class="w-full p-2 mt-1 border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                    <option value="">Toți membrii</option>
-                    @foreach ($members as $member)
-                        <option value="{{ $member->id }}">{{ $member->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <!-- Filtrare după perioadă -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Data început
-                </label>
-                <input type="date" wire:model.live="dateFrom"
-                    class="w-full p-2 mt-1 border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Data sfârșit
-                </label>
-                <input type="date" wire:model.live="dateTo"
-                    class="w-full p-2 mt-1 border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-            </div>
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-4"> <!-- Am modificat grid-cols-3 în grid-cols-4 -->
+        <!-- Filtrare după membru -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Filtru Membru
+            </label>
+            <select wire:model.live="filterMemberId"
+                class="w-full p-2 mt-1 border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                <option value="">Toți membrii</option>
+                @foreach ($members as $member)
+                    <option value="{{ $member->id }}">{{ $member->name }}</option>
+                @endforeach
+            </select>
         </div>
 
-        <!-- Buton resetare filtre -->
-        <div class="flex justify-end mt-4">
-            <button wire:click="resetFilters"
-                class="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
-                Resetează filtrele
-            </button>
+        <!-- Filtrare după grupă -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Filtru Grupă
+            </label>
+            <select wire:model.live="filterGroupId"
+                class="w-full p-2 mt-1 border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                <option value="">Toate grupele</option>
+                @foreach ($groups as $group)
+                    <option value="{{ $group->id }}">{{ $group->name }}</option>
+                @endforeach
+            </select>
         </div>
-    </div>
 
-    <!-- Sumarul plăților -->
-    <div class="p-4 mb-4 bg-white rounded-lg shadow dark:bg-gray-800">
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-            <div>
-                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Perioada
-                </span>
-                <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                    {{ \Carbon\Carbon::parse($dateFrom)->format('d.m.Y') }} -
-                    {{ \Carbon\Carbon::parse($dateTo)->format('d.m.Y') }}
-                </p>
-            </div>
-            <div>
-                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Total plăți
-                </span>
-                <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                    {{ $payments->count() }}
-                </p>
-            </div>
-            <div>
-                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Sumă totală
-                </span>
-                <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                    {{ number_format($payments->sum('amount'), 2) }} RON
-                </p>
-            </div>
+        <!-- Filtrare după perioadă -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Data început
+            </label>
+            <input type="date" wire:model.live="dateFrom"
+                class="w-full p-2 mt-1 border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Data sfârșit
+            </label>
+            <input type="date" wire:model.live="dateTo"
+                class="w-full p-2 mt-1 border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
         </div>
     </div>
+
+    <!-- Buton resetare filtre -->
+    <div class="flex justify-end mt-4">
+        <button wire:click="resetFilters"
+            class="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
+            Resetează filtrele
+        </button>
+    </div>
+</div>
 
     <!-- Payments Cards -->
     <div class="space-y-4">
