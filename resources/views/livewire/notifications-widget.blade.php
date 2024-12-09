@@ -21,7 +21,7 @@
          x-transition:leave="transition ease-in duration-75"
          x-transition:leave-start="transform opacity-100 scale-100"
          x-transition:leave-end="transform opacity-0 scale-95"
-         class="fixed inset-x-0 z-50 mx-2 top-16 sm:absolute sm:inset-x-auto sm:right-0 sm:w-80 sm:mx-0 sm:mt-2 sm:origin-top-right">
+         class="fixed inset-x-0 z-50 mx-2 top-16 md:top-12 sm:absolute sm:inset-x-auto sm:right-0 sm:w-80 sm:mx-0 sm:mt-2 sm:origin-top-right">
         
         <div class="overflow-hidden bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-800">
             <!-- Header -->
