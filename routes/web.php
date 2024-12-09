@@ -1,5 +1,7 @@
 <?php
 
+use App\Livewire\Blog\PostShow;
+use App\Livewire\Blog\PostsList;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\DocumentationController;
@@ -86,5 +88,12 @@ Route::prefix('reports')->name('reports.')->group(function () {
     Route::get('/attendance', [ReportController::class, 'attendance'])->name('attendance');
     Route::get('/event/{event}/results', [ReportController::class, 'eventResults'])->name('event-results');
 });
+
+//Blog
+
+Route::get('/blog', PostsList::class)->name('blog.index');
+Route::get('/blog/category/{slug}', PostsList::class)->name('blog.category');
+
+Route::get('/blog/{slug}', PostShow::class)->name('blog.post');
 
 });
