@@ -103,7 +103,8 @@
                 <nav class="flex items-center space-x-4">
                     @auth
                         <a href="{{ url('/dashboard') }}"
-                            class="font-semibold text-gray-700 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400">Tablou de bord</a>
+                            class="font-semibold text-gray-700 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400">Tablou
+                            de bord</a>
                     @else
                         <a href="{{ route('login') }}"
                             class="font-semibold text-gray-700 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400">Login</a>
@@ -170,11 +171,21 @@
                                     </svg>
                                 </a>
 
+                                <a href="{{ route('blog.index') }}"
+                                    class="inline-flex items-center px-6 py-3 font-semibold text-teal-600 transition-colors bg-white border-2 border-teal-600 rounded-lg shadow-lg hover:bg-teal-50 dark:bg-gray-800 dark:text-teal-400 dark:border-teal-400 dark:hover:bg-gray-700">
+                                    Blog
+                                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2.5 2.5.5 0 00-2.5-2.5H14" />
+                                    </svg>
+                                </a>
+
                                 <!-- Install PWA Button -->
                                 <button id="installApp" style="display: none;"
                                     class="inline-flex items-center px-6 py-3 font-semibold text-teal-600 transition-colors bg-white border-2 border-teal-600 rounded-lg shadow-lg hover:bg-teal-50 dark:bg-gray-800 dark:text-teal-400 dark:border-teal-400 dark:hover:bg-gray-700">
                                     Instalează Aplicația
-                                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                     </svg>
