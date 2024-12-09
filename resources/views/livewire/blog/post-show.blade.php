@@ -28,6 +28,13 @@
             <span>
                 {{ $post->views_count }} vizualizări
             </span>
+
+            <x-social-share 
+                :url="route('blog.post', $post->slug)"
+                :title="$post->title"
+                :description="$post->meta_description"
+            />
+            
         </div>
     </header>
 
@@ -54,8 +61,8 @@
                 @foreach ($relatedPosts as $relatedPost)
                     <article class="overflow-hidden bg-white rounded-lg shadow dark:bg-gray-800">
                         @if ($relatedPost->featured_image)
-                            <img src="{{ $relatedPost->featured_image }}" alt="{{ $relatedPost->title }}"
-                                class="object-cover w-full h-48">
+                            <img src="{{ $relatedPost->featured_image_url }}" alt="{{ $relatedPost->title }}"
+                                class="object-cover w-full h-auto">
                         @endif
                         <div class="p-6">
                             <h3 class="mb-2 text-lg font-semibold">
