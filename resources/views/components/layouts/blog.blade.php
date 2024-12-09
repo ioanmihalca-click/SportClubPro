@@ -1,15 +1,39 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
-
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Blog' }} - SportClubPro</title>
-
-    <!-- SEO Meta Tags -->
-    <meta name="description"
-        content="{{ $metaDescription ?? 'Blog despre management sportiv și administrarea cluburilor sportive' }}">
-
+    
+    {{-- SEO Meta Tags --}}
+    <title>{{ $seoTitle ?? 'Blog SportClubPro - Management pentru Cluburi Sportive' }}</title>
+    <meta name="description" content="{{ $seoDescription ?? 'Articole despre management sportiv și administrarea cluburilor sportive' }}">
+    
+    {{-- Open Graph Meta Tags --}}
+    <meta property="og:site_name" content="SportClubPro">
+    <meta property="og:title" content="{{ $seoTitle ?? 'Blog SportClubPro' }}">
+    <meta property="og:description" content="{{ $seoDescription ?? 'Articole despre management sportiv și administrarea cluburilor sportive' }}">
+    <meta property="og:type" content="{{ $ogType ?? 'website' }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="{{ $ogImage ?? url('images/default-og-image.jpg') }}">
+    <meta property="og:locale" content="ro_RO">
+    
+    @if($ogType ?? '' == 'article')
+        <meta property="article:published_time" content="{{ $ogPublishTime ?? '' }}">
+        <meta property="article:modified_time" content="{{ $ogModifiedTime ?? '' }}">
+        @if(isset($post) && $post->category)
+            <meta property="article:section" content="{{ $post->category->name }}">
+        @endif
+    @endif
+    
+    {{-- Twitter Card Meta Tags --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $seoTitle ?? 'Blog SportClubPro' }}">
+    <meta name="twitter:description" content="{{ $seoDescription ?? 'Articole despre management sportiv și administrarea cluburilor sportive' }}">
+    <meta name="twitter:image" content="{{ $ogImage ?? url('images/default-og-image.jpg') }}">
+    
+    {{-- Canonical URL --}}
+    <link rel="canonical" href="{{ url()->current() }}">
+    
       <!-- Favicons -->
     <link rel="icon" type="image/png" href="{{ asset('assets/favicon/favicon-96x96.png') }}" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="{{ asset('assets/favicon/favicon.svg') }}" />

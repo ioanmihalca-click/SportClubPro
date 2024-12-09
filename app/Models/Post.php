@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -63,4 +64,66 @@ class Post extends Model
         return url($this->featured_image);
     }
     
+     /**
+     * Get the SEO title for the post.
+     */
+    public function getSeoTitleAttribute(): string
+    {
+        return $this->title . ' - Blog SportClubPro';
+    }
+
+    /**
+     * Get the SEO description for the post.
+     */
+    public function getSeoDescriptionAttribute(): string
+    {
+        if ($this->meta_description) {
+            return $this->meta_description;
+        }
+        
+        // Generăm o descriere din conținut dacă nu există meta_description
+        return Str::limit(
+            strip_tags($this->content),
+            160,
+            '...'
+        );
+    }
+
+    /**
+     * Get the Open Graph type.
+     */
+    public function getOgTypeAttribute(): string
+    {
+        return 'article';
+    }
+
+    /**
+     * Get the article publish time for Open Graph.
+     */
+    public function getOgPublishTimeAttribute(): string
+    {
+        return $this->published_at->toIso8601String();
+    }
+
+    /**
+     * Get the article modified time for Open Graph.
+     */
+    public function getOgModifiedTimeAttribute(): string
+    {
+        return $this->updated_at->toIso8601String();
+    }
+
+    /**
+     * Get the Open Graph image URL.
+     */
+    public function getOgImageAttribute(): ?string
+    {
+        if ($this->featured_image) {
+            return url($this->featured_image);
+        }
+        
+        // Imagine default dacă nu există featured image
+        return url('assets/OG-sportclubpro.jpg');
+    }
+
 }

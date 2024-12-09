@@ -30,8 +30,12 @@ class PostShow extends Component
                 ->limit(3)
                 ->get()
         ])->layout('components.layouts.blog', [
-            'title' => $this->post->title,
-            'metaDescription' => $this->post->meta_description
+            'seoTitle' => $this->post->seo_title,
+            'seoDescription' => $this->post->seo_description,
+            'ogType' => $this->post->og_type,
+            'ogImage' => $this->post->og_image,
+            'ogPublishTime' => $this->post->og_publish_time,
+            'ogModifiedTime' => $this->post->og_modified_time,
         ]);
     }
 }
