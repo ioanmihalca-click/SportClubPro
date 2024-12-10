@@ -58,9 +58,10 @@ return [
             'strict' => false, // schimbat din true în false
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
                 PDO::ATTR_TIMEOUT => 60,
-                PDO::ATTR_PERSISTENT => true,
+                PDO::ATTR_PERSISTENT => false, // Important pentru shared hosting
+                PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ]) : [],
             'wait_timeout' => 28800,
             'connect_timeout' => 10,
