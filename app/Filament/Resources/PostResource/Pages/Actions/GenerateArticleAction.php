@@ -44,8 +44,6 @@ class GenerateArticleAction extends Action
                     ->disabled(fn(Get $get) => !$get('category'))
                     ->visible(fn(Get $get) => !empty($get('category'))),
 
-            
-                    
                     TextInput::make('topic')
                     ->label('Subiect Specific')
                     ->required()
@@ -85,6 +83,8 @@ class GenerateArticleAction extends Action
                                 }
                             })
                     ),
+                    
+                    
             ])
             ->action(function (array $data, GrokArticleGenerationService $service) {
                 try {

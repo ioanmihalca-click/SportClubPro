@@ -10,6 +10,7 @@
         "barryvdh/laravel-dompdf": "^3.0",
         "erusev/parsedown": "^1.7",
         "filament/filament": "^3.2",
+        "halilcosdu/laravel-replicate": "^1.0",
         "laravel-lang/lang": "^15.9",
         "laravel/framework": "^11.31",
         "laravel/jetstream": "^5.3",

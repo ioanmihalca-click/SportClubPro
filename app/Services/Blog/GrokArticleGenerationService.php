@@ -2,9 +2,10 @@
 
 namespace App\Services\Blog;
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Exception;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use HalilCosdu\Replicate\Facades\Replicate;
 
 class GrokArticleGenerationService
 {
@@ -608,6 +609,65 @@ class GrokArticleGenerationService
             'error' => $e->getMessage(),
         ]);
 
+        return [
+            'success' => false,
+            'error' => $e->getMessage()
+        ];
+    }
+}
+
+public function generateImagePrompt(string $category, string $template, string $topic): array
+{
+    try {
+        $response = Http::withHeaders($this->headers)
+            ->timeout(30)
+            ->post("{$this->baseUrl}/v1/chat/completions", [
+                'model' => 'grok-beta',
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => "Ești un expert în generarea de prompturi pentru imagini care ilustrează articole despre management sportiv."
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => "Generează un prompt detaliat în engleză pentru a crea o imagine care să ilustreze un articol despre {$topic} în contextul {$category}. Prompt-ul trebuie să fie specific pentru modelul Flux Schnell și să descrie o scenă care să reprezinte bine subiectul articolului."
+                    ]
+                ],
+                'temperature' => 0.7,
+                'max_tokens' => 200
+            ]);
+
+        return [
+            'success' => true,
+            'prompt' => trim($response->json('choices.0.message.content'))
+        ];
+
+    } catch (Exception $e) {
+        return [
+            'success' => false,
+            'error' => $e->getMessage()
+        ];
+    }
+}
+
+public function generateImage(string $prompt): array
+{
+    try {
+        $response = Replicate::run(
+            "black-forest-labs/flux-schnell",
+            [
+                'prompt' => $prompt,
+                'width' => 1280,
+                'height' => 720
+            ]
+        );
+
+        return [
+            'success' => true,
+            'url' => $response
+        ];
+
+    } catch (Exception $e) {
         return [
             'success' => false,
             'error' => $e->getMessage()

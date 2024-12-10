@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f9e3d979ddf9e28bc9c9f75c129048d1",
+    "content-hash": "4253e4d70c3a4ad008ed2bd996ab8f06",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -2718,6 +2718,85 @@
                 }
             ],
             "time": "2023-12-03T19:50:20+00:00"
+        },
+        {
+            "name": "halilcosdu/laravel-replicate",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/halilcosdu/laravel-replicate.git",
+                "reference": "ed409d0a4f72697511714f8af21bebfa68d2624f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/halilcosdu/laravel-replicate/zipball/ed409d0a4f72697511714f8af21bebfa68d2624f",
+                "reference": "ed409d0a4f72697511714f8af21bebfa68d2624f",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^10.0||^11.0",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.16"
+            },
+            "require-dev": {
+                "larastan/larastan": "^2.9",
+                "laravel/pint": "^1.14",
+                "nunomaduro/collision": "^8.1.1||^7.10.0",
+                "orchestra/testbench": "^9.0.0||^8.22.0",
+                "pestphp/pest": "^2.34",
+                "pestphp/pest-plugin-arch": "^2.7",
+                "pestphp/pest-plugin-laravel": "^2.3",
+                "phpstan/extension-installer": "^1.3",
+                "phpstan/phpstan-deprecation-rules": "^1.1",
+                "phpstan/phpstan-phpunit": "^1.3",
+                "spatie/laravel-ray": "^1.35"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "HalilCosdu\\Replicate\\ReplicateServiceProvider"
+                    ],
+                    "aliases": {
+                        "Replicate": "HalilCosdu\\Replicate\\Facades\\Replicate"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "HalilCosdu\\Replicate\\": "src/",
+                    "HalilCosdu\\Replicate\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Halil Cosdu",
+                    "email": "halilcosdu@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Replicate Laravel PHP client",
+            "homepage": "https://github.com/halilcosdu/laravel-replicate",
+            "keywords": [
+                "HalilCosdu",
+                "laravel",
+                "laravel-replicate"
+            ],
+            "support": {
+                "issues": "https://github.com/halilcosdu/laravel-replicate/issues",
+                "source": "https://github.com/halilcosdu/laravel-replicate/tree/v1.0.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/HalilCosdu",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-04-27T15:09:50+00:00"
         },
         {
             "name": "kirschbaum-development/eloquent-power-joins",
