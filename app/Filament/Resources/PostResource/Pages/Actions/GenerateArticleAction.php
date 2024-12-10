@@ -113,21 +113,22 @@ class GenerateArticleAction extends Action
                             try {
                                 $service = app(GrokArticleGenerationService::class);
                                 $categorySlug = $this->getSlugForCategory((int)$get('category'));
-    
+                        
                                 $promptResult = $service->generateImagePrompt(
                                     $categorySlug,
                                     $get('template'),
                                     $get('topic')
                                 );
-    
+                        
                                 if (!$promptResult['success']) {
                                     throw new Exception('Nu s-a putut genera prompt-ul pentru imagine');
                                 }
-    
+                        
                                 $imageResult = $service->generateImage($promptResult['prompt']);
-    
+                        
                                 if ($imageResult['success']) {
-                                    $set('featured_image', $imageResult['url']);
+                                    // Setăm ca array pentru a face Filament fericit
+                                    $set('featured_image', [$imageResult['url']]);
                                     Notification::make()
                                         ->success()
                                         ->title('Imagine generată')
@@ -257,24 +258,25 @@ class GenerateArticleAction extends Action
         // Mapare între slug-urile din DB și cheile din template-uri
         $slugMap = [
             'management-si-organizare' => 'management',
-            'marketing-pentru-cluburi' => 'marketing',
-            'aspecte-financiare' => 'finance',
+            'marketing-pentru-cluburi-sportive' => 'marketing',     // updated
+            'aspecte-financiare-si-bugetare' => 'finance',         // updated
             'tehnologie-in-sport' => 'technology',
-            'dezvoltarea-tinerilor' => 'youth-development',
+            'dezvoltarea-tinerilor-sportivi' => 'youth_development', // updated
             'best-practices-in-coaching' => 'coaching',
-            'studii-de-caz' => 'case-studies',
+            'studii-de-caz-si-success-stories' => 'case_studies',  // updated
             'evenimente-si-competitii' => 'events',
             'legislatie-si-aspecte-juridice' => 'legal',
             'sanatate-si-nutritie-sportiva' => 'health'
         ];
+    
 
         // Convertește slug-ul din DB în cheia pentru template-uri
         $templateKey = $slugMap[$categoryModel->slug] ?? $categoryModel->slug;
 
-        Log::info('Template options:', [
-            'category_id' => $category,
+        Log::info('Category slug check:', [
             'db_slug' => $categoryModel->slug,
-            'template_key' => $templateKey
+            'mapped_slug' => $slugMap[$categoryModel->slug] ?? 'not_found',
+            'has_templates' => isset($templates[$templateKey])
         ]);
 
 
@@ -299,7 +301,7 @@ class GenerateArticleAction extends Action
                 'trends' => 'Tendințe Tehnologice',
                 'implementation' => 'Implementare Tehnologică',
             ],
-            'youth-development' => [
+            'youth_development' => [
                 'guide' => 'Ghid pentru Dezvoltarea Juniorilor',
                 'best_practices' => 'Cele Mai Bune Practici',
                 'program' => 'Program de Dezvoltare',
@@ -309,7 +311,7 @@ class GenerateArticleAction extends Action
                 'techniques' => 'Tehnici de Coaching',
                 'best_practices' => 'Cele Mai Bune Practici',
             ],
-            'case-studies' => [
+            'case_studies' => [
                 'success_story' => 'Poveste de Succes',
                 'analysis' => 'Analiză de Caz',
                 'implementation' => 'Implementare Practică',

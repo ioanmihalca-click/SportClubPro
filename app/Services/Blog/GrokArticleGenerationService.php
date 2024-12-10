@@ -3,9 +3,15 @@
 namespace App\Services\Blog;
 
 use Exception;
+use GuzzleHttp\Client;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use HalilCosdu\Replicate\Facades\Replicate;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class GrokArticleGenerationService
 {
@@ -561,18 +567,19 @@ class GrokArticleGenerationService
     }
 
     public function generateArticleMetaDescription(string $category, string $template, string $topic): string
-    {
-        try {
-            return $this->generateMetaDescription($category, $template, $topic);
-        } catch (Exception $e) {
-            Log::error('Meta description generation failed:', [
-                'error' => $e->getMessage(),
-                'category' => $category,
-                'template' => $template
-            ]);
-            return "Descoperă strategii și sfaturi practice despre {$topic} pentru clubul tău sportiv. Ghid complet cu exemple și studii de caz.";
-        }
+{
+    try {
+        $metaDescription = $this->generateMetaDescription($category, $template, $topic);
+        return Str::limit($metaDescription, 157, '...');
+    } catch (Exception $e) {
+        Log::error('Meta description generation failed:', [
+            'error' => $e->getMessage(),
+            'category' => $category,
+            'template' => $template
+        ]);
+        return Str::limit("Descoperă strategii și sfaturi practice despre {$topic} pentru clubul tău sportiv. Ghid complet cu exemple și studii de caz.", 157, '...');
     }
+}
 
     public function generateTopicSuggestion(string $category, string $template): array
 {
@@ -619,62 +626,169 @@ class GrokArticleGenerationService
 public function generateImagePrompt(string $category, string $template, string $topic): array
 {
     try {
-        $response = Http::withHeaders($this->headers)
+        // Întâi traducem topic-ul în engleză folosind Grok
+        $translationResponse = Http::withHeaders($this->headers)
             ->timeout(30)
             ->post("{$this->baseUrl}/v1/chat/completions", [
                 'model' => 'grok-beta',
                 'messages' => [
                     [
                         'role' => 'system',
-                        'content' => "Ești un expert în generarea de prompturi pentru imagini care ilustrează articole despre management sportiv."
+                        'content' => "You are a professional translator. Translate the given text from Romanian to English. Respond only with the translation, no additional text."
                     ],
                     [
                         'role' => 'user',
-                        'content' => "Generează un prompt detaliat în engleză pentru a crea o imagine care să ilustreze un articol despre {$topic} în contextul {$category}. Prompt-ul trebuie să fie specific pentru modelul Flux Schnell și să descrie o scenă care să reprezinte bine subiectul articolului."
+                        'content' => $topic
                     ]
                 ],
-                'temperature' => 0.7,
-                'max_tokens' => 200
+                'temperature' => 0.3,
+                'max_tokens' => 100
             ]);
+
+        if (!$translationResponse->successful()) {
+            throw new Exception('Translation failed');
+        }
+
+        $translatedTopic = trim($translationResponse->json('choices.0.message.content'));
+        
+        $basePrompt = "Professional high quality photo of {$translatedTopic} in sports management. 8k, realistic, modern, detailed, sharp focus";
+
+        Log::info('Generated image prompt', [
+            'original_topic' => $topic,
+            'translated_topic' => $translatedTopic,
+            'final_prompt' => $basePrompt
+        ]);
 
         return [
             'success' => true,
-            'prompt' => trim($response->json('choices.0.message.content'))
+            'prompt' => $basePrompt
         ];
 
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
+        Log::error('Failed to generate image prompt', [
+            'error' => $e->getMessage()
+        ]);
+
         return [
             'success' => false,
             'error' => $e->getMessage()
         ];
+    }
+}
+
+
+private function downloadAndSaveImage(string $url, string $directory = 'blog-images'): string
+{
+    try {
+        $client = new \GuzzleHttp\Client();
+        $response = $client->get($url);
+        
+        if ($response->getStatusCode() !== 200) {
+            throw new \Exception('Failed to download image');
+        }
+        
+        $content = (string) $response->getBody();
+        if (empty($content)) {
+            throw new \Exception('Empty image content received');
+        }
+
+        // Creăm un manager de imagine
+        $manager = new ImageManager(new Driver());
+        
+        // Încărcăm și redimensionăm imaginea
+        $image = $manager->read($content);
+        $image->resize(1200, 630, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+
+        $filename = Str::random(40) . '.webp';
+        $path = "{$directory}/{$filename}";
+        
+        // Salvăm imaginea redimensionată
+        Storage::disk('public')->put(
+            $path, 
+            $image->toWebp(80)->toString() 
+        );
+        
+        Log::info('Image saved successfully', [
+            'path' => $path,
+            'size' => Storage::disk('public')->size($path)
+        ]);
+
+        return $path;
+    } catch (\Exception $e) {
+        Log::error('Failed to download and save image', [
+            'url' => $url,
+            'error' => $e->getMessage()
+        ]);
+        throw $e;
     }
 }
 
 public function generateImage(string $prompt): array
 {
     try {
-        $response = Replicate::run(
-            "black-forest-labs/flux-schnell",
+        Log::info('Starting image generation', ['prompt' => $prompt]);
+        
+        $prediction = Replicate::createModelPrediction(
+            "black-forest-labs",
+            "flux-schnell",
+            'latest',
             [
-                'prompt' => $prompt,
-                'width' => 1280,
-                'height' => 720
+               'input' => [
+                        'prompt' => $prompt,
+                        'go_fast' => true,
+                        'megapixels' => "1",
+                        'num_outputs' => 1,
+                        'aspect_ratio' => "16:9",
+                        'output_format' => "webp",
+                        'output_quality' => 80,
+                        'num_inference_steps' => 4
+                    ]
             ]
         );
 
-        return [
-            'success' => true,
-            'url' => $response
-        ];
+        $predictionId = $prediction['id'];
+        $maxAttempts = 30;
+        $attempts = 0;
+        
+        do {
+            sleep(2);
+            $attempts++;
+            
+            $result = Replicate::getPrediction($predictionId);
+            
+            if (isset($result['status']) && $result['status'] === 'succeeded' && isset($result['output'][0])) {
+                $imageUrl = $result['output'][0];
+                $localPath = $this->downloadAndSaveImage($imageUrl);
+
+                return [
+                    'success' => true,
+                    'url' => $localPath
+                ];
+            }
+            
+            if (isset($result['status']) && $result['status'] === 'failed') {
+                throw new Exception('Image generation failed: ' . ($result['error'] ?? 'Unknown error'));
+            }
+            
+        } while ($attempts < $maxAttempts);
+        
+        throw new Exception('Image generation timed out after ' . $maxAttempts . ' attempts');
 
     } catch (Exception $e) {
+        Log::error('Image Generation Error', [
+            'error' => $e->getMessage(),
+            'prompt' => $prompt
+        ]);
+        
         return [
             'success' => false,
             'error' => $e->getMessage()
         ];
     }
 }
-
     // public function testConnection(): array
     // {
     //     try {
