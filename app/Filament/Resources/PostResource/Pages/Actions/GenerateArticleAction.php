@@ -2,19 +2,27 @@
 
 namespace App\Filament\Resources\PostResource\Pages\Actions;
 
+use Exception;
 use App\Models\Post;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Filament\Actions\Action;
 use Illuminate\Support\Facades\DB;
+use Filament\Forms\Components\Grid;
 use Illuminate\Support\Facades\Log;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Support\Enums\ActionSize;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Forms\Components\FileUpload;
 use App\Services\Blog\GrokArticleGenerationService;
 use Filament\Forms\Components\Actions\Action as FormAction;
-use Filament\Forms\Set;
-use Filament\Notifications\Notification;
+
+
 
 class GenerateArticleAction extends Action
 {
@@ -23,129 +31,173 @@ class GenerateArticleAction extends Action
         parent::setUp();
 
         $this->label('Generează Articol')
-            ->icon('heroicon-o-sparkles')
-            ->color('primary')
-            ->form([
-                Select::make('category')
-                    ->label('Categorie')
-                    ->options(Category::pluck('name', 'id'))
-                    ->required()
-                    ->live(),
-
-                Select::make('template')
-                    ->label('Tip Articol')
-                    ->options(function (Get $get) {
-                        $category = $get('category');
-                        $options = self::getTemplateOptions($category);
-                        Log::info('Template select options:', ['options' => $options]);
-                        return $options;
-                    })
-                    ->required()
-                    ->disabled(fn(Get $get) => !$get('category'))
-                    ->visible(fn(Get $get) => !empty($get('category'))),
-
+        ->icon('heroicon-o-sparkles')
+        ->color('primary')
+        ->form([
+            Select::make('category')
+                ->label('Categorie')
+                ->options(Category::pluck('name', 'id'))
+                ->required()
+                ->live(),
+    
+            Select::make('template')
+                ->label('Tip Articol')
+                ->options(function (Get $get) {
+                    $category = $get('category');
+                    $options = self::getTemplateOptions($category);
+                    Log::info('Template select options:', ['options' => $options]);
+                    return $options;
+                })
+                ->required()
+                ->disabled(fn(Get $get) => !$get('category'))
+                ->visible(fn(Get $get) => !empty($get('category'))),
+    
+            Section::make('Conținut')
+                ->schema([
                     TextInput::make('topic')
-                    ->label('Subiect Specific')
-                    ->required()
-                    ->maxLength(100)
-                    ->suffixAction(
-                        FormAction::make('generateTopic')
-                            ->icon('heroicon-m-sparkles')
-                            ->color('primary')
-                            ->action(function (Set $set, Get $get, GrokArticleGenerationService $service) {
-                                try {
-                                    $categorySlug = $this->getSlugForCategory((int)$get('category'));
-                                    
-                                    $result = $service->generateTopicSuggestion(
-                                        $categorySlug,
-                                        $get('template')
-                                    );
-                                    
-                                    if ($result['success']) {
-                                        $set('topic', $result['topic']);
-                                        Notification::make()
-                                            ->success()
-                                            ->title('Sugestie generată')
-                                            ->send();
-                                    } else {
-                                        Notification::make()
-                                            ->error()
-                                            ->title('Eroare la generarea sugestiei')
-                                            ->body($result['error'])
-                                            ->send();
-                                    }
-                                } catch (\Exception $e) {
+                        ->label('Subiect Specific')
+                        ->required()
+                        ->maxLength(100),
+                ])
+                ->headerActions([
+                    FormAction::make('generateTopic')
+                        ->label('Generează Subiect')
+                        ->icon('heroicon-m-sparkles')
+                        ->color('primary')
+                        ->action(function (Set $set, Get $get) {
+                            try {
+                                $service = app(GrokArticleGenerationService::class);
+                                $categorySlug = $this->getSlugForCategory((int)$get('category'));
+    
+                                $result = $service->generateTopicSuggestion(
+                                    $categorySlug,
+                                    $get('template')
+                                );
+    
+                                if ($result['success']) {
+                                    $set('topic', $result['topic']);
                                     Notification::make()
-                                        ->error()
-                                        ->title('Eroare')
-                                        ->body('Nu s-a putut genera o sugestie')
+                                        ->success()
+                                        ->title('Sugestie generată')
+                                        ->send();
+                                } else {
+                                    Notification::make()
+                                        ->danger()
+                                        ->title('Eroare la generarea sugestiei')
+                                        ->body($result['error'])
                                         ->send();
                                 }
-                            })
-                    ),
-                    
-                    
-            ])
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Eroare')
+                                    ->body('Nu s-a putut genera o sugestie')
+                                    ->send();
+                            }
+                        })
+                ]),
+    
+            Section::make('Imagine')
+                ->schema([
+                    FileUpload::make('featured_image')
+                        ->label('Imagine principală')
+                        ->image()
+                        ->directory('blog-images'),
+                ])
+                ->headerActions([
+                    FormAction::make('generateImage')
+                        ->label('Generează Imagine')
+                        ->icon('heroicon-m-photo')
+                        ->color('primary')
+                        ->action(function (Set $set, Get $get) {
+                            try {
+                                $service = app(GrokArticleGenerationService::class);
+                                $categorySlug = $this->getSlugForCategory((int)$get('category'));
+    
+                                $promptResult = $service->generateImagePrompt(
+                                    $categorySlug,
+                                    $get('template'),
+                                    $get('topic')
+                                );
+    
+                                if (!$promptResult['success']) {
+                                    throw new Exception('Nu s-a putut genera prompt-ul pentru imagine');
+                                }
+    
+                                $imageResult = $service->generateImage($promptResult['prompt']);
+    
+                                if ($imageResult['success']) {
+                                    $set('featured_image', $imageResult['url']);
+                                    Notification::make()
+                                        ->success()
+                                        ->title('Imagine generată')
+                                        ->send();
+                                } else {
+                                    throw new Exception($imageResult['error']);
+                                }
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Eroare')
+                                    ->body('Nu s-a putut genera imaginea')
+                                    ->send();
+                            }
+                        })
+                ])
+        ])
             ->action(function (array $data, GrokArticleGenerationService $service) {
                 try {
                     DB::beginTransaction();
 
-                    // Obținem categoria din baza de date
                     $category = Category::findOrFail($data['category']);
+                    $categorySlug = $this->getSlugForCategory((int)$data['category']);
 
-                    // Folosim maparea pentru a obține slug-ul corect pentru service
-                    $slugMap = [
-                        'management-si-organizare' => 'management',
-                        'marketing-pentru-cluburi' => 'marketing',
-                        'aspecte-financiare' => 'finance',
-                        'tehnologie-in-sport' => 'technology',
-                        'dezvoltarea-tinerilor' => 'youth-development',
-                        'best-practices-in-coaching' => 'coaching',
-                        'studii-de-caz' => 'case-studies',
-                        'evenimente-si-competitii' => 'events',
-                        'legislatie-si-aspecte-juridice' => 'legal',
-                        'sanatate-si-nutritie-sportiva' => 'health'
-                    ];
-
-                    $categorySlug = $slugMap[$category->slug] ?? $category->slug;
-
-                    // Generează articolul folosind slug-ul categoriei
                     $result = $service->generateArticle(
-                        $categorySlug, // trimitem slug-ul în loc de ID
+                        $categorySlug,
                         $data['template'],
                         $data['topic']
                     );
 
                     if (!$result['success']) {
                         DB::rollBack();
-                        $this->failure(
-                            'Generarea articolului a eșuat: ' .
-                                ($result['error'] ?? 'Eroare necunoscută')
-                        );
+                        Notification::make()
+                            ->danger()
+                            ->title('Eroare')
+                            ->body('Generarea articolului a eșuat: ' . ($result['error'] ?? 'Eroare necunoscută'))
+                            ->send();
                         return;
                     }
 
-                    // Validează datele primite
                     $validatedData = $this->validateGeneratedContent($result);
 
-                    // Creează articolul folosind ID-ul original al categoriei
                     $post = Post::create([
                         'title' => $validatedData['title'],
                         'slug' => $this->generateUniqueSlug($validatedData['title']),
                         'content' => $validatedData['content'],
                         'meta_description' => $validatedData['meta_description'],
                         'status' => 'draft',
-                        'category_id' => $data['category'], // folosim ID-ul original
+                        'category_id' => $data['category'],
+                        'featured_image' => $data['featured_image'] ?? null,
                         'generated_at' => now(),
                     ]);
 
                     DB::commit();
 
-                    $this->success('Articolul a fost generat și salvat cu succes!');
+                    Notification::make()
+                        ->success()
+                        ->title('Succes')
+                        ->body('Articolul a fost generat și salvat cu succes!')
+                        ->send();
+
                 } catch (\Exception $e) {
                     DB::rollBack();
                     Log::error('Eroare la generarea articolului: ' . $e->getMessage());
-                    $this->failure('A apărut o eroare la salvarea articolului.');
+                    
+                    Notification::make()
+                        ->danger()
+                        ->title('Eroare')
+                        ->body('A apărut o eroare la salvarea articolului.')
+                        ->send();
                 }
             });
     }
