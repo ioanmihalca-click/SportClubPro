@@ -31,57 +31,65 @@ class GrokArticleGenerationService
     }
 
     public function generateArticle(string $category, string $template, string $topic): array
-    {
-        try {
-            $response = Http::withHeaders($this->headers)
-                ->timeout(30)
-                ->post("{$this->baseUrl}/v1/chat/completions", [
-                    'model' => 'grok-beta',
-                    'messages' => [
-                        [
-                            'role' => 'system',
-                            'content' => $this->getSystemPrompt()
+{
+    try {
+        $maxRetries = 3;
+        $attempt = 0;
+        
+        while ($attempt < $maxRetries) {
+            try {
+                $response = Http::withHeaders($this->headers)
+                    ->timeout(60) // mărim la 60 secunde
+                    ->retry(3, 1000) // 3 încercări cu 1 secundă între ele
+                    ->post("{$this->baseUrl}/v1/chat/completions", [
+                        'model' => 'grok-beta',
+                        'messages' => [
+                            [
+                                'role' => 'system',
+                                'content' => $this->getSystemPrompt()
+                            ],
+                            [
+                                'role' => 'user',
+                                'content' => $this->buildPrompt($category, $template, $topic)
+                            ]
                         ],
-                        [
-                            'role' => 'user',
-                            'content' => $this->buildPrompt($category, $template, $topic)
-                        ]
-                    ],
-                    'temperature' => 0.7,
-                    'max_tokens' => 2048
-                ]);
+                        'temperature' => 0.7,
+                        'max_tokens' => 2048
+                    ]);
 
-            if (!$response->successful()) {
-                Log::error('API Response:', [
-                    'status' => $response->status(),
-                    'body' => $response->json(),
-                    'headers' => $response->headers()
-                ]);
+                if ($response->successful()) {
+                    return [
+                        'success' => true,
+                        'content' => $response->json('choices.0.message.content'),
+                        'title' => $this->generateTitle($category, $template, $topic),
+                        'meta_description' => $this->generateMetaDescription($category, $template, $topic)
+                    ];
+                }
+
                 throw new Exception($response->json('error.message', 'Unknown API error'));
+            } catch (\Exception $e) {
+                $attempt++;
+                if ($attempt === $maxRetries) {
+                    throw $e;
+                }
+                sleep(2); // pauză între încercări
             }
-
-            $content = $response->json('choices.0.message.content');
-
-            return [
-                'success' => true,
-                'content' => $content,
-                'title' => $this->generateTitle($category, $template, $topic),
-                'meta_description' => $this->generateMetaDescription($category, $template, $topic)
-            ];
-        } catch (Exception $e) {
-            Log::error('Grok Article Generation failed:', [
-                'error' => $e->getMessage(),
-                'category' => $category,
-                'template' => $template,
-                'topic' => $topic
-            ]);
-
-            return [
-                'success' => false,
-                'error' => $e->getMessage()
-            ];
         }
+
+    } catch (Exception $e) {
+        Log::error('Grok Article Generation failed:', [
+            'error' => $e->getMessage(),
+            'category' => $category,
+            'template' => $template,
+            'topic' => $topic
+        ]);
+
+        return [
+            'success' => false,
+            'error' => $e->getMessage()
+        ];
     }
+}
 
     private function getSystemPrompt(): string
     {
