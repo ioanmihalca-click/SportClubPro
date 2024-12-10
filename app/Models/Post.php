@@ -55,15 +55,19 @@ class Post extends Model
     }
 
     public function getFeaturedImageUrlAttribute()
-    {
-        if (!$this->featured_image) {
-            return null;
-        }
-        
-        // Asigurăm-ne că returnăm o cale absolută
-        return url($this->featured_image);
+{
+    if (!$this->featured_image) {
+        return null;
     }
     
+    // Verificăm dacă featured_image începe cu 'storage/'
+    if (Str::startsWith($this->featured_image, 'storage/')) {
+        return url($this->featured_image);
+    }
+
+    // Dacă nu începe cu 'storage/', adăugăm prefixul
+    return url('storage/' . $this->featured_image);
+}
      /**
      * Get the SEO title for the post.
      */
