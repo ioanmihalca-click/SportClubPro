@@ -16,6 +16,7 @@ use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Support\Enums\ActionSize;
+use Illuminate\Database\QueryException;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
@@ -155,62 +156,113 @@ class GenerateArticleAction extends Action
                         })
                 ])
         ])
-            ->action(function (array $data, GrokArticleGenerationService $service) {
-                try {
-                    DB::beginTransaction();
+        ->action(function (array $data, GrokArticleGenerationService $service) {
+            try {
+                $this->ensureDatabaseConnection();
+                DB::beginTransaction();
 
-                    $category = Category::findOrFail($data['category']);
-                    $categorySlug = $this->getSlugForCategory((int)$data['category']);
+                $category = Category::findOrFail($data['category']);
+                $categorySlug = $this->getSlugForCategory((int)$data['category']);
 
-                    $result = $service->generateArticle(
-                        $categorySlug,
-                        $data['template'],
-                        $data['topic']
-                    );
+                $result = $service->generateArticle(
+                    $categorySlug,
+                    $data['template'],
+                    $data['topic']
+                );
 
-                    if (!$result['success']) {
-                        DB::rollBack();
-                        Notification::make()
-                            ->danger()
-                            ->title('Eroare')
-                            ->body('Generarea articolului a eșuat: ' . ($result['error'] ?? 'Eroare necunoscută'))
-                            ->send();
-                        return;
-                    }
-
-                    $validatedData = $this->validateGeneratedContent($result);
-
-                    $post = Post::create([
-                        'title' => $validatedData['title'],
-                        'slug' => $this->generateUniqueSlug($validatedData['title']),
-                        'content' => $validatedData['content'],
-                        'meta_description' => $validatedData['meta_description'],
-                        'status' => 'draft',
-                        'category_id' => $data['category'],
-                        'featured_image' => $data['featured_image'] ?? null,
-                        'generated_at' => now(),
-                    ]);
-
-                    DB::commit();
-
-                    Notification::make()
-                        ->success()
-                        ->title('Succes')
-                        ->body('Articolul a fost generat și salvat cu succes!')
-                        ->send();
-
-                } catch (\Exception $e) {
+                if (!$result['success']) {
                     DB::rollBack();
-                    Log::error('Eroare la generarea articolului: ' . $e->getMessage());
-                    
                     Notification::make()
                         ->danger()
                         ->title('Eroare')
-                        ->body('A apărut o eroare la salvarea articolului.')
+                        ->body('Generarea articolului a eșuat: ' . ($result['error'] ?? 'Eroare necunoscută'))
                         ->send();
+                    return;
                 }
-            });
-    }
+
+                $this->ensureDatabaseConnection(); // Verificăm din nou conexiunea înainte de a salva
+
+                $validatedData = $this->validateGeneratedContent($result);
+
+                $post = Post::create([
+                    'title' => $validatedData['title'],
+                    'slug' => $this->generateUniqueSlug($validatedData['title']),
+                    'content' => $validatedData['content'],
+                    'meta_description' => $validatedData['meta_description'],
+                    'status' => 'draft',
+                    'category_id' => $data['category'],
+                    'featured_image' => $data['featured_image'] ?? null,
+                    'generated_at' => now(),
+                ]);
+
+                DB::commit();
+
+                Notification::make()
+                    ->success()
+                    ->title('Succes')
+                    ->body('Articolul a fost generat și salvat cu succes!')
+                    ->send();
+
+            } catch (QueryException $e) {
+                DB::rollBack();
+                
+                if ($e->getCode() == 2006 || str_contains($e->getMessage(), 'server has gone away')) {
+                    // Încercăm să reconectăm și să reîncercăm o dată
+                    try {
+                        DB::reconnect();
+                        DB::beginTransaction();
+                        
+                        // Reîncearcă operațiunea
+                        $post = Post::create([
+                            'title' => $validatedData['title'],
+                            'slug' => $this->generateUniqueSlug($validatedData['title']),
+                            'content' => $validatedData['content'],
+                            'meta_description' => $validatedData['meta_description'],
+                            'status' => 'draft',
+                            'category_id' => $data['category'],
+                            'featured_image' => $data['featured_image'] ?? null,
+                            'generated_at' => now(),
+                        ]);
+
+                        DB::commit();
+
+                        Notification::make()
+                            ->success()
+                            ->title('Succes')
+                            ->body('Articolul a fost generat și salvat cu succes după reconectare!')
+                            ->send();
+                            
+                        return;
+                    } catch (\Exception $retryException) {
+                        DB::rollBack();
+                        Log::error('Retry failed after reconnection: ' . $retryException->getMessage());
+                    }
+                }
+                
+                Log::error('Database error during article generation: ', [
+                    'error' => $e->getMessage(),
+                    'code' => $e->getCode(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                
+                Notification::make()
+                    ->danger()
+                    ->title('Eroare de bază de date')
+                    ->body('A apărut o eroare la salvarea articolului. Vă rugăm încercați din nou.')
+                    ->send();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Eroare la generarea articolului: ' . $e->getMessage());
+                
+                Notification::make()
+                    ->danger()
+                    ->title('Eroare')
+                    ->body('A apărut o eroare la salvarea articolului.')
+                    ->send();
+            }
+        });
+}
+
 
     private function validateGeneratedContent(array $result): array
     {
