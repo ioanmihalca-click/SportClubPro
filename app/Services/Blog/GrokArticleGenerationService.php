@@ -664,7 +664,7 @@ public function generateImagePrompt(string $category, string $template, string $
 
         $translatedTopic = trim($translationResponse->json('choices.0.message.content'));
         
-        $basePrompt = "Professional high quality photo of {$translatedTopic} in sports management. 8k, realistic, modern, detailed, sharp focus";
+        $basePrompt = "Professional high quality photo of {$translatedTopic}. 8k, realistic, modern, detailed, sharp focus";
 
         Log::info('Generated image prompt', [
             'original_topic' => $topic,
