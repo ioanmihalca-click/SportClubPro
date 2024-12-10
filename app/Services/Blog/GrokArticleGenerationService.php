@@ -567,19 +567,32 @@ class GrokArticleGenerationService
     }
 
     public function generateArticleMetaDescription(string $category, string $template, string $topic): string
-{
-    try {
-        $metaDescription = $this->generateMetaDescription($category, $template, $topic);
-        return Str::limit($metaDescription, 157, '...');
-    } catch (Exception $e) {
-        Log::error('Meta description generation failed:', [
-            'error' => $e->getMessage(),
-            'category' => $category,
-            'template' => $template
-        ]);
-        return Str::limit("Descoperă strategii și sfaturi practice despre {$topic} pentru clubul tău sportiv. Ghid complet cu exemple și studii de caz.", 157, '...');
+    {
+        // Definește limita ca o constantă sau utilizează config pentru flexibilitate
+        $metaDescriptionLimit = 157;
+    
+        try {
+            // Încearcă să generezi meta descrierea
+            $metaDescription = $this->generateMetaDescription($category, $template, $topic);
+    
+            // Limitează lungimea folosind helper-ul Laravel Str
+            return Str::limit($metaDescription, $metaDescriptionLimit, '...');
+        } catch (Exception $e) {
+            // Loghează eroarea folosind Laravel Log
+            Log::error('Meta description generation failed', [
+                'error' => $e->getMessage(),
+                'category' => $category,
+                'template' => $template
+            ]);
+    
+            // Fallback meta descriere
+            $fallbackDescription = "Descoperă strategii și sfaturi practice despre {$topic} pentru clubul tău sportiv. Ghid complet cu exemple și studii de caz.";
+    
+            // Returnează fallback-ul trunchiat
+            return Str::limit($fallbackDescription, $metaDescriptionLimit, '...');
+        }
     }
-}
+    
 
     public function generateTopicSuggestion(string $category, string $template): array
 {
