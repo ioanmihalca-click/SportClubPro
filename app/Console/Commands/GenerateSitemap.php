@@ -15,8 +15,8 @@ class GenerateSitemap extends Command
     protected $description = 'Generează sitemap-ul aplicației și notifică motoarele de căutare';
 
     protected array $searchEngines = [
-        'Google' => 'https://www.google.com/ping?sitemap=',
-        'Bing' => 'https://www.bing.com/ping?sitemap='
+        'Google' => 'https://www.google.com/webmasters/tools/ping',
+        'Bing' => 'https://www.bing.com/webmaster/ping.aspx'
     ];
 
     public function handle()
@@ -79,7 +79,7 @@ class GenerateSitemap extends Command
         // Adaugă celelalte pagini publice
         collect(config('app.public_routes', []))
             ->reject(function ($route) use ($excludedPaths) {
-                return collect($excludedPaths)->some(fn ($path) => str_contains($route, $path));
+                return collect($excludedPaths)->some(fn($path) => str_contains($route, $path));
             })
             ->each(function ($route) use ($sitemap) {
                 $sitemap->add(
@@ -93,8 +93,8 @@ class GenerateSitemap extends Command
 
         $this->info('Sitemap-ul a fost generat cu succes la: ' . public_path('sitemap.xml'));
 
-          // Notifică motoarele de căutare
-          $this->pingSearchEngines();
+        // Notifică motoarele de căutare
+        $this->pingSearchEngines();
     }
 
     protected function pingSearchEngines(): void
@@ -103,7 +103,10 @@ class GenerateSitemap extends Command
 
         foreach ($this->searchEngines as $engine => $pingUrl) {
             try {
-                $response = Http::get($pingUrl . urlencode($sitemapUrl));
+                $response = Http::get($pingUrl, [
+                    'sitemap' => $sitemapUrl,
+                    'url' => config('app.url')
+                ]);
 
                 if ($response->successful()) {
                     $this->info("✓ {$engine} a fost notificat cu succes despre noul sitemap.");
@@ -113,10 +116,8 @@ class GenerateSitemap extends Command
             } catch (\Exception $e) {
                 $this->error("✗ Eroare la notificarea {$engine}: " . $e->getMessage());
             }
-            
-            // Pauză scurtă între ping-uri pentru a evita rate limiting
-            sleep(1);
+
+            sleep(2); // mărim puțin pauza între ping-uri
         }
     }
 }
-
