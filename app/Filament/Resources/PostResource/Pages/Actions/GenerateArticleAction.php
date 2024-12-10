@@ -28,55 +28,6 @@ use Filament\Forms\Components\Actions\Action as FormAction;
 class GenerateArticleAction extends Action
 {
 
-
-    private function withDatabaseReconnection(callable $callback)
-{
-    $maxAttempts = 3;
-    $attempt = 1;
-
-    while ($attempt <= $maxAttempts) {
-        try {
-            // Reconectăm înainte de a începe
-            DB::reconnect();
-            
-            DB::beginTransaction();
-            
-            // Execută operațiunea
-            $result = $callback();
-            
-            DB::commit();
-            return $result;
-            
-        } catch (\Exception $e) {
-            DB::rollBack();
-            
-            if ($attempt === $maxAttempts) {
-                throw $e;
-            }
-            
-            // Verificăm dacă e eroare de conexiune
-            if ($this->isConnectionError($e)) {
-                Log::warning("Database connection attempt {$attempt} failed, retrying...");
-                sleep(1);
-                $attempt++;
-                continue;
-            }
-            
-            throw $e;
-        }
-    }
-}
-
-private function isConnectionError(\Exception $e): bool
-{
-    return $e instanceof \PDOException && (
-        $e->getCode() == 2006 || 
-        str_contains($e->getMessage(), 'server has gone away') ||
-        str_contains($e->getMessage(), 'Lost connection') ||
-        str_contains($e->getMessage(), 'Gone away')
-    );
-}
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -198,10 +149,10 @@ private function isConnectionError(\Exception $e): bool
                     ])
             ])
             ->action(function (array $data, GrokArticleGenerationService $service) {
-                return $this->withDatabaseReconnection(function () use ($data, $service) {
-                    $category = Category::findOrFail($data['category']);
+                try {
+                    // 1. Mai întâi generăm tot conținutul
                     $categorySlug = $this->getSlugForCategory((int)$data['category']);
-            
+                    
                     $result = $service->generateArticle(
                         $categorySlug,
                         $data['template'],
@@ -219,16 +170,22 @@ private function isConnectionError(\Exception $e): bool
             
                     $validatedData = $this->validateGeneratedContent($result);
             
-                    $post = Post::create([
-                        'title' => $validatedData['title'],
-                        'slug' => $this->generateUniqueSlug($validatedData['title']),
-                        'content' => $validatedData['content'],
-                        'meta_description' => $validatedData['meta_description'],
-                        'status' => 'draft',
-                        'category_id' => $data['category'],
-                        'featured_image' => $data['featured_image'] ?? null,
-                        'generated_at' => now(),
-                    ]);
+                    // 2. Reconectăm la baza de date
+                    DB::reconnect();
+                    
+                    // 3. Începem tranzacția și facem operațiunile pe DB
+                    DB::transaction(function() use ($data, $validatedData) {
+                        $post = Post::create([
+                            'title' => $validatedData['title'],
+                            'slug' => $this->generateUniqueSlug($validatedData['title']),
+                            'content' => $validatedData['content'],
+                            'meta_description' => $validatedData['meta_description'],
+                            'status' => 'draft',
+                            'category_id' => $data['category'],
+                            'featured_image' => $data['featured_image'] ?? null,
+                            'generated_at' => now(),
+                        ]);
+                    }, 3); // 3 încercări
             
                     Notification::make()
                         ->success()
@@ -236,8 +193,15 @@ private function isConnectionError(\Exception $e): bool
                         ->body('Articolul a fost generat și salvat cu succes!')
                         ->send();
             
-                    return $post;
-                });
+                } catch (\Exception $e) {
+                    Log::error('Eroare la generarea articolului: ' . $e->getMessage());
+                    
+                    Notification::make()
+                        ->danger()
+                        ->title('Eroare')
+                        ->body('A apărut o eroare la salvarea articolului.')
+                        ->send();
+                }
             });
     }
 
