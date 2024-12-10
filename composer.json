@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.0",
+        "erusev/parsedown": "^1.7",
         "filament/filament": "^3.2",
         "laravel-lang/lang": "^15.9",
         "laravel/framework": "^11.31",
@@ -15,6 +16,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.0",
+        "mozex/anthropic-laravel": "^1.0",
         "silviolleite/laravelpwa": "^2.0",
         "spatie/laravel-sitemap": "^7.3",
         "symfony/mailer": "~7.1.6"

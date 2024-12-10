@@ -1,3 +1,7 @@
+@php
+    $parsedown = new Parsedown();
+@endphp
+
 <article class="max-w-4xl mx-auto">
     <x-schema-org :post="$post" />
     <!-- Breadcrumbs -->
@@ -47,7 +51,7 @@
 
     <!-- Article Content -->
     <div class="mb-12 prose prose-lg dark:prose-invert max-w-none">
-        {!! $post->content !!}
+            {!! $parsedown->text($post->content) !!}
     </div>
 
     <!-- Related Posts -->

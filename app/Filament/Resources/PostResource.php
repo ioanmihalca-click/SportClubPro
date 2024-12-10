@@ -2,15 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PostResource\Pages;
-use App\Models\Post;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\Post;
 use Filament\Tables;
+use Filament\Forms\Set;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Filament\Forms\Set;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\MarkdownEditor;
+use App\Filament\Resources\PostResource\Pages;
+use App\Filament\Resources\PostResource\Pages\Actions\GenerateArticleAction;
 
 class PostResource extends Resource
 {
@@ -57,23 +59,20 @@ class PostResource extends Resource
                                     ->directory('blog-images')
                                     ->columnSpanFull(),
 
-                                Forms\Components\RichEditor::make('content')
+                                    MarkdownEditor::make('content')
                                     ->label('Conținut')
                                     ->required()
                                     ->toolbarButtons([
+                                        'heading2',
+                                        'heading3',
                                         'bold',
                                         'italic',
-                                        'underline',
                                         'strike',
                                         'link',
+                                        'bulletList',
                                         'orderedList',
-                                        'unorderedList',
-                                        'h2',
-                                        'h3',
                                         'blockquote',
-                                        'redo',
-                                        'undo',
-                                        'code'
+                                        'codeBlock',
                                     ])
                                     ->columnSpanFull(),
                             ])
@@ -176,6 +175,13 @@ class PostResource extends Resource
             //
         ];
     }
+
+    public static function getHeaderActions(): array
+{
+    return [
+        GenerateArticleAction::make('generateArticle'),
+    ];
+}
 
     public static function getPages(): array
     {

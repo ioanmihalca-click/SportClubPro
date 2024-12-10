@@ -13,12 +13,12 @@ class PopularPosts extends BaseWidget
     
     protected function getStats(): array
     {
-        // Luăm top 4 articole după vizualizări
+        // Luăm top 3 articole după vizualizări
         $popularPosts = Post::query()
             ->published()
             ->with('category')
             ->orderByDesc('views_count')
-            ->limit(4)
+            ->limit(3)
             ->get();
 
         return $popularPosts->map(function ($post) {
