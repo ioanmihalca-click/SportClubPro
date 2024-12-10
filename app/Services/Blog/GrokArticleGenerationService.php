@@ -573,6 +573,48 @@ class GrokArticleGenerationService
         }
     }
 
+    public function generateTopicSuggestion(string $category, string $template): array
+{
+    try {
+        $response = Http::withHeaders($this->headers)
+            ->timeout(30)
+            ->post("{$this->baseUrl}/v1/chat/completions", [
+                'model' => 'grok-beta',
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => "Ești un expert în management sportiv care generează subiecte relevante pentru articole de blog."
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => "Sugerează un subiect specific și relevant pentru un articol de tip {$template} în categoria {$category}. Răspunde doar cu subiectul, fără alte explicații."
+                    ]
+                ],
+                'temperature' => 0.7,
+                'max_tokens' => 100
+            ]);
+
+        if (!$response->successful()) {
+            throw new Exception($response->json('error.message', 'Unknown API error'));
+        }
+
+        return [
+            'success' => true,
+            'topic' => trim($response->json('choices.0.message.content'))
+        ];
+
+    } catch (Exception $e) {
+        Log::error('Topic suggestion failed:', [
+            'error' => $e->getMessage(),
+        ]);
+
+        return [
+            'success' => false,
+            'error' => $e->getMessage()
+        ];
+    }
+}
+
     // public function testConnection(): array
     // {
     //     try {

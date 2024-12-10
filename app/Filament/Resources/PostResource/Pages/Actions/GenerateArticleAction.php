@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Log;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use App\Services\Blog\GrokArticleGenerationService;
+use Filament\Forms\Components\Actions\Action as FormAction;
+use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 
 class GenerateArticleAction extends Action
 {
@@ -41,10 +44,47 @@ class GenerateArticleAction extends Action
                     ->disabled(fn(Get $get) => !$get('category'))
                     ->visible(fn(Get $get) => !empty($get('category'))),
 
-                TextInput::make('topic')
+            
+                    
+                    TextInput::make('topic')
                     ->label('Subiect Specific')
                     ->required()
-                    ->maxLength(100),
+                    ->maxLength(100)
+                    ->suffixAction(
+                        FormAction::make('generateTopic')
+                            ->icon('heroicon-m-sparkles')
+                            ->color('primary')
+                            ->action(function (Set $set, Get $get, GrokArticleGenerationService $service) {
+                                try {
+                                    $categorySlug = $this->getSlugForCategory((int)$get('category'));
+                                    
+                                    $result = $service->generateTopicSuggestion(
+                                        $categorySlug,
+                                        $get('template')
+                                    );
+                                    
+                                    if ($result['success']) {
+                                        $set('topic', $result['topic']);
+                                        Notification::make()
+                                            ->success()
+                                            ->title('Sugestie generată')
+                                            ->send();
+                                    } else {
+                                        Notification::make()
+                                            ->error()
+                                            ->title('Eroare la generarea sugestiei')
+                                            ->body($result['error'])
+                                            ->send();
+                                    }
+                                } catch (\Exception $e) {
+                                    Notification::make()
+                                        ->error()
+                                        ->title('Eroare')
+                                        ->body('Nu s-a putut genera o sugestie')
+                                        ->send();
+                                }
+                            })
+                    ),
             ])
             ->action(function (array $data, GrokArticleGenerationService $service) {
                 try {
