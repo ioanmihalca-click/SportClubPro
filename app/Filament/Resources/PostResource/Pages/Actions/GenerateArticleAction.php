@@ -30,35 +30,52 @@ class GenerateArticleAction extends Action
 
 
     private function withDatabaseReconnection(callable $callback)
-    {
-        $maxAttempts = 3;
-        $attempt = 1;
-    
-        while ($attempt <= $maxAttempts) {
-            try {
-                if (!DB::connection()->getPdo()) {
-                    DB::reconnect();
-                }
-                return $callback();
-            } catch (QueryException $e) {
-                if ($attempt === $maxAttempts || !$this->isConnectionError($e)) {
-                    throw $e;
-                }
-                
+{
+    $maxAttempts = 3;
+    $attempt = 1;
+
+    while ($attempt <= $maxAttempts) {
+        try {
+            // Reconectăm înainte de a începe
+            DB::reconnect();
+            
+            DB::beginTransaction();
+            
+            // Execută operațiunea
+            $result = $callback();
+            
+            DB::commit();
+            return $result;
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            if ($attempt === $maxAttempts) {
+                throw $e;
+            }
+            
+            // Verificăm dacă e eroare de conexiune
+            if ($this->isConnectionError($e)) {
                 Log::warning("Database connection attempt {$attempt} failed, retrying...");
-                DB::reconnect();
                 sleep(1);
                 $attempt++;
+                continue;
             }
+            
+            throw $e;
         }
     }
-    
-    private function isConnectionError(QueryException $e): bool
-    {
-        return $e->getCode() == 2006 || 
-               str_contains($e->getMessage(), 'server has gone away') ||
-               str_contains($e->getMessage(), 'Lost connection');
-    }
+}
+
+private function isConnectionError(\Exception $e): bool
+{
+    return $e instanceof \PDOException && (
+        $e->getCode() == 2006 || 
+        str_contains($e->getMessage(), 'server has gone away') ||
+        str_contains($e->getMessage(), 'Lost connection') ||
+        str_contains($e->getMessage(), 'Gone away')
+    );
+}
 
     protected function setUp(): void
     {
@@ -182,58 +199,44 @@ class GenerateArticleAction extends Action
             ])
             ->action(function (array $data, GrokArticleGenerationService $service) {
                 return $this->withDatabaseReconnection(function () use ($data, $service) {
-                    try {
-                        DB::beginTransaction();
+                    $category = Category::findOrFail($data['category']);
+                    $categorySlug = $this->getSlugForCategory((int)$data['category']);
             
-                        $category = Category::findOrFail($data['category']);
-                        $categorySlug = $this->getSlugForCategory((int)$data['category']);
+                    $result = $service->generateArticle(
+                        $categorySlug,
+                        $data['template'],
+                        $data['topic']
+                    );
             
-                        $result = $service->generateArticle(
-                            $categorySlug,
-                            $data['template'],
-                            $data['topic']
-                        );
-            
-                        if (!$result['success']) {
-                            DB::rollBack();
-                            Notification::make()
-                                ->danger()
-                                ->title('Eroare')
-                                ->body('Generarea articolului a eșuat: ' . ($result['error'] ?? 'Eroare necunoscută'))
-                                ->send();
-                            return;
-                        }
-            
-                        $validatedData = $this->validateGeneratedContent($result);
-            
-                        $post = Post::create([
-                            'title' => $validatedData['title'],
-                            'slug' => $this->generateUniqueSlug($validatedData['title']),
-                            'content' => $validatedData['content'],
-                            'meta_description' => $validatedData['meta_description'],
-                            'status' => 'draft',
-                            'category_id' => $data['category'],
-                            'featured_image' => $data['featured_image'] ?? null,
-                            'generated_at' => now(),
-                        ]);
-            
-                        DB::commit();
-            
-                        Notification::make()
-                            ->success()
-                            ->title('Succes')
-                            ->body('Articolul a fost generat și salvat cu succes!')
-                            ->send();
-                    } catch (\Exception $e) {
-                        DB::rollBack();
-                        Log::error('Eroare la generarea articolului: ' . $e->getMessage());
-                        
+                    if (!$result['success']) {
                         Notification::make()
                             ->danger()
                             ->title('Eroare')
-                            ->body('A apărut o eroare la salvarea articolului.')
+                            ->body('Generarea articolului a eșuat: ' . ($result['error'] ?? 'Eroare necunoscută'))
                             ->send();
+                        return;
                     }
+            
+                    $validatedData = $this->validateGeneratedContent($result);
+            
+                    $post = Post::create([
+                        'title' => $validatedData['title'],
+                        'slug' => $this->generateUniqueSlug($validatedData['title']),
+                        'content' => $validatedData['content'],
+                        'meta_description' => $validatedData['meta_description'],
+                        'status' => 'draft',
+                        'category_id' => $data['category'],
+                        'featured_image' => $data['featured_image'] ?? null,
+                        'generated_at' => now(),
+                    ]);
+            
+                    Notification::make()
+                        ->success()
+                        ->title('Succes')
+                        ->body('Articolul a fost generat și salvat cu succes!')
+                        ->send();
+            
+                    return $post;
                 });
             });
     }
