@@ -17,7 +17,7 @@ class CreatePost extends CreateRecord
     protected function getHeaderActions(): array
     {
         return [
-            GenerateArticleAction::make('generateArticle'),
+           
         ];
     }
 }

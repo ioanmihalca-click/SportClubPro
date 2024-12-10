@@ -15,8 +15,7 @@ class EditPost extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
-            GenerateArticleAction::make('generateArticle')
-            ->record($this->record), 
+          
         ];
     }
 
