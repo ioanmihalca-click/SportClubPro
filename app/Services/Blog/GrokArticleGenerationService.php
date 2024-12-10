@@ -555,9 +555,12 @@ class GrokArticleGenerationService
             ],
         ];
 
-        $defaultMeta = "Află tot ce trebuie să știi despre {$topic} în managementul cluburilor sportive. Ghid complet cu exemple practice și strategii dovedite.";
+        $defaultMeta = "Află tot ce trebuie să știi despre {$topic} în managementul cluburilor sportive. Ghid practic.";
 
-        return $metaTemplates[$category][$template] ?? $defaultMeta;
+        $metaDescription = $metaTemplates[$category][$template] ?? $defaultMeta;
+        
+        // Ne asigurăm că nu depășim limita în niciun caz
+        return Str::limit($metaDescription, 157, '...');
     }
 
     public function generateArticleTitle(string $category, string $template, string $topic): string

@@ -241,6 +241,11 @@ class GenerateArticleAction extends Action
 
     private function validateGeneratedContent(array $result): array
     {
+        // Mai întâi trunchem meta description-ul
+        if (isset($result['meta_description'])) {
+            $result['meta_description'] = Str::limit($result['meta_description'], 157, '...');
+        }
+    
         return validator($result, [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
